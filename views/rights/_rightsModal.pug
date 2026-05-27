@@ -1,0 +1,78 @@
+//- Create Modal
+dialog#createRightGroups 
+    .text-end
+        button.button.btn.btn-danger.btn-sm.closeCreate(type="button") ×
+    form.form-horizontal(action="/rights/rights-group-add", method="POST")
+        .card-header.bg-white.py-3.text-center
+            h5.mb-0.text-primary    
+                | Thêm nhóm quyền
+        .card-body
+            div.form-group
+                label(for='TenNQ') Tên nhóm
+                input.form-control(type='text' name='TenNQ' id='TenNQ' required)
+        .card-footer.text-center.m-2
+            button.btn.btn-primary(type="submit") Thêm
+            button.btn.btn-outline-secondary.closeCreate(type="button" data-bs-dismiss="modal") Huỷ
+dialog#updateRightGroups 
+    .text-end
+        button.button.btn.btn-danger.btn-sm.closeUpdate(type="button") ×
+    form.form-horizontal(action="/rights/rights-group-update", method="POST")
+        .card-header.bg-white.py-3.text-center
+            h5.mb-0.text-primary    
+                | Sửa nhóm quyền
+        .card-body
+            div.form-group
+                label(for='updateTenNQ') Tên nhóm
+                input.form-control(type='text' name='TenNQ' id='updateTenNQ' required)
+                input(type='hidden' name='MANQ' id='updateMANQ')
+        .card-footer.text-center.m-2
+            button.btn.btn-primary(type="submit") Lưu
+            button.btn.btn-outline-secondary.closeUpdate(type="button" data-bs-dismiss="modal") Huỷ      
+            //- Create Modal
+dialog#createRights
+    .text-end
+        button.button.btn.btn-danger.btn-sm.closeCreateRights(type="button") ×
+    form.form-horizontal(action="/rights/rights-add", method="POST")
+        .card-header.bg-white.py-3.text-center
+            h5.mb-0.text-primary    
+                | Thêm quyền
+        .card-body
+            div.form-group
+                label(for='tenquyen') Tên quyền
+                input.form-control(type='text' name='tenquyen' id='tenquyen' required)
+                input(type='hidden' name='MANQ' id='MANQ')
+            div.form-group
+                label(for='mota') Mô tả
+                input.form-control(type='text' name='description' id='mota' required)
+        .card-footer.text-center.m-2
+            button.btn.btn-primary(type="submit") Thêm
+            button.btn.btn-outline-secondary.closeCreateRights(type="button" data-bs-dismiss="modal") Huỷ
+dialog#updateRights 
+    .text-end
+        button.button.btn.btn-danger.btn-sm.closeUpdateQuyen(type="button") ×
+    form.form-horizontal(action="/rights/rights-update", method="POST")
+        .card-header.bg-white.py-3.text-center
+            h5.mb-0.text-primary    
+                | Sửa quyền
+        .card-body
+            div.form-group
+                label(for='updateQuyen') Tên quyền
+                input.form-control(type='text' name='tenquyen' id='updateQuyen' required)
+                input(type='hidden' name='id' id='updateRightsId')
+            div.form-group
+                label(for='updateDescription') Mô tả
+                input.form-control(type='text' name='description' id='updateDescription' required)
+        .card-footer.text-center.m-2
+            button.btn.btn-primary(type="submit") Lưu
+            button.btn.btn-outline-secondary.closeUpdateQuyen(type="button" data-bs-dismiss="modal") Huỷ            
+style.
+    #createRightGroups, #updateRightGroups, #createRights, #updateRights {
+            min-width: 400px;
+            max-width: 800px;
+            border: none;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 6px rgba(216,89,16,0.08);
+            background: linear-gradient(135deg, #fff 80%, #f8fafc 100%);
+            position: relative;
+            animation: dialogFadeIn 0.35s;
+        }

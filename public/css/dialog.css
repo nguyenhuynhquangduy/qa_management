@@ -1,0 +1,59 @@
+dialog#create-product,
+dialog#updateProduct {
+  min-width: 520px;
+  max-width: 700px;
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18),
+    0 1.5px 6px rgba(216, 89, 16, 0.08);
+  background: linear-gradient(135deg, #fff 80%, #f8fafc 100%);
+  padding: 32px 24px 24px 24px;
+  position: fixed;
+  bottom: 40%;
+  left: 40%;
+  transform: translate(-40%, 0);
+  z-index: 1050;
+  animation: dialogFadeIn 0.35s ease-out;
+}
+
+@keyframes dialogFadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-40%, -30px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-40%, 0) scale(1);
+  }
+}
+
+dialog#create-service,
+dialog#create-service-group,
+dialog#updateServiceGroup,
+dialog#updateService {
+  width: 50%;
+  min-width: 420px;
+  max-width: 640px;
+  border: none;
+  border-radius: 15px;
+  position: fixed;
+  left: 40%;
+  bottom: 20%;
+  transform: translate(-40%, 0);
+  z-index: 1050;
+  background: white;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  animation: dialogFadeInService 0.35s ease-out;
+}
+
+@keyframes dialogFadeInService {
+  from {
+    opacity: 0;
+    transform: translate(-40%, -30px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-40%, 0) scale(1);
+  }
+}

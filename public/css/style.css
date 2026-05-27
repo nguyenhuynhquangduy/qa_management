@@ -1,0 +1,134 @@
+body {
+  background-color: rgb(255, 255, 255);
+  font-size: large;
+}
+
+.index {
+  background-color: rgb(247, 219, 95);
+}
+
+.btn {
+  font-size: large;
+}
+nav {
+  height: 5px; /* Chiều cao thanh menu nhỏ hơn */
+  display: flex;
+  align-items: center; /* Căn giữa nội dung theo chiều dọc */
+  /* padding: 0 20px; */
+  background-color: #f8f9fa; /* Màu nền nhẹ (tuỳ chỉnh) */
+}
+.nav ul {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  /* gap: 10px; */
+}
+.thead-color-blue {
+  background-color: #9ac9f299;
+}
+.nav li a {
+  display: inline-block;
+  /* padding: 6px 12px; */
+  color: #000;
+  text-decoration: none;
+}
+
+.nav li a:hover {
+  background-color: #f4f4f4;
+  border-radius: 4px;
+}
+
+.nav .btn {
+  /* height: 32px;
+  padding: 4px 10px; */
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  /* Đảm bảo header hiển thị trên các phần khác trên trang */
+}
+
+#header .medcen .nav {
+  background-color: rgb(19, 138, 106);
+  color: aliceblue;
+  /* padding: 3px 50px; */
+  display: flex;
+  justify-content: space-between;
+  /* căn chỉnh theo trục chính */
+}
+
+#header .medcen .nav ul {
+  display: flex;
+  justify-content: space-around;
+  /* khoảng cách đều nhau */
+  align-items: center;
+}
+
+#footer {
+  background-color: rgb(19, 138, 106);
+}
+
+#header .medcen .nav li {
+  list-style: none;
+  padding-top: 5px;
+}
+
+#header .medcen .nav h5 {
+  list-style: none;
+  padding-top: 1%;
+  padding-left: 1%;
+}
+
+#header .medcen .nav li a {
+  color: aliceblue;
+  text-decoration: none;
+  padding-right: 10%;
+}
+
+#header .medcen .nav li a:hover {
+  color: rgb(23, 209, 23);
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  #header .medcen {
+    flex-direction: column;
+    /* Đặt các phần tử theo chiều dọc trên màn hình nhỏ */
+    height: auto;
+    /* Tự động điều chỉnh chiều cao */
+  }
+
+  #header .nav {
+    margin-left: 0;
+    /* Đặt margin cho menu trên màn hình nhỏ */
+    width: 100%;
+    /* Đảm bảo danh sách menu chiếm toàn bộ chiều rộng */
+  }
+
+  #header .nav ul {
+    flex-direction: column;
+    /* Đặt các mục menu theo chiều dọc */
+  }
+
+  #header .nav li {
+    width: 100%;
+    /* Đảm bảo các mục chiếm toàn bộ chiều rộng */
+    text-align: center;
+    /* Căn giữa nội dung */
+  }
+
+  #header .nav li a {
+    /* padding: 10px 0; */
+    /* Tăng padding dọc để dễ bấm hơn trên màn hình nhỏ */
+    line-height: normal;
+    /* Điều chỉnh line-height để phù hợp với chiều cao mục */
+  }
+}
+
+/* */

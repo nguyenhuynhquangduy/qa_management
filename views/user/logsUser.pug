@@ -1,0 +1,75 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/bootstrap.bundle.min.js")  
+        script(src="/js/sweetalert2@11.js") 
+        script(src="/js/duy_editor.js")
+        title Logs User
+    body
+        section
+            h1.text-center.text-uppercase.my-2(style='color:rgb(13, 110, 253);font-size:20px') Logs User
+        section
+            .row
+                .col-md-12
+                    table.table.table-striped.table-bordered
+                        thead.text-center
+                            tr
+                                th ID
+                                th Hành động
+                                th Ghi nhận
+                                th Thời gian
+                        tbody#logs-user-list
+                            each log in logs
+                                tr
+                                    td #{log.id}
+                                    td #{log.action}
+                                    td #{log.logs}
+                                    td #{log.createdAt}
+        #toast
+        script.
+            function toast(msg, bg) {
+                const t = document.getElementById('toast');
+                if (!t) return;
+                t.textContent = msg;
+                t.style.background = bg || '#333';
+                t.style.opacity = '1';
+                t.style.transform = 'translateX(-50%) translateY(0)';
+                setTimeout(() => {
+                    t.style.opacity = '0';
+                    t.style.transform = 'translateX(-50%) translateY(80px)';
+                }, 3000);
+            }
+            //- $(document).ready(function() {
+            //-     $.ajax({
+            //-         url: '/users/logs-user',
+            //-         method: 'GET',
+            //-         success: function(data) {
+            //-             const logsList = $('#logs-user-list');
+            //-             logsList.empty();
+            //-             data.forEach(log => {
+            //-                 const logItem = `
+            //-                     <tr>
+            //-                         <td>${log.id}</td>
+            //-                         <td>${log.username}</td>
+            //-                         <td>${log.action}</td>
+            //-                         <td>${new Date(log.timestamp).toLocaleString()}</td>
+            //-                     </tr>
+            //-                 `;
+            //-                 logsList.append(logItem);
+            //-             });
+            //-         },
+            //-         error: function(err) {
+            //-             console.error('Error fetching logs:', err);
+            //-             toast('Lỗi khi tải logs', 'red');
+            //-         }
+            //-     });
+            //- });

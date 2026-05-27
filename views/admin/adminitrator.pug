@@ -1,0 +1,169 @@
+extends ../layout
+block head 
+    style. 
+        .show-dropdown {
+            display: block;
+        }
+    script.
+            //-     document.addEventListener('DOMContentLoaded', function () {
+            //-         let menuToggles = document.querySelectorAll('.menu-toggle');
+
+            //-         menuToggles.forEach(function(menuToggle) {
+            //-                     // Kiểm tra trạng thái lưu trữ và khôi phục dropdown nếu cần
+            //-             let dropdown = menuToggle.nextElementSibling;
+            //-             let menuState = sessionStorage.getItem(menuToggle.textContent.trim());
+
+            //-             if (menuState === 'open') {
+            //-                 dropdown.classList.add('show-dropdown');
+            //-             }
+
+            //-             menuToggle.addEventListener('click', function(event) {
+            //-                 event.preventDefault(); // Ngăn việc chuyển trang khi nhấp
+            //-                 let dropdown = this.nextElementSibling; // Lấy phần tử tiếp theo (ul chứa dropdown)
+                    
+            //-             // Toggle class để mở/đóng dropdown
+            //-             dropdown.classList.toggle('show-dropdown');
+            //-             // Lưu trạng thái vào localStorage
+            //-             if (dropdown.classList.contains('show-dropdown')) {
+            //-                 sessionStorage.setItem(menuToggle.textContent.trim(), 'open');
+            //-             } else {
+            //-                 sessionStorage.removeItem(menuToggle.textContent.trim());
+            //-             }
+            //-             });
+            //-     });  
+            //-     });
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tìm tất cả các phần tử collapse có ID
+            const collapses = document.querySelectorAll('.collapse');
+
+            collapses.forEach(collapseEl => {
+                const menuId = collapseEl.getAttribute('data-menu-id');
+                const bsCollapse = new bootstrap.Collapse(collapseEl, { toggle: false });
+
+                // 1. Kiểm tra trạng thái cũ trong sessionStorage
+                if (sessionStorage.getItem(menuId) === 'open') {
+                    bsCollapse.show();
+                }
+
+                // 2. Lắng nghe sự kiện khi menu mở ra
+                collapseEl.addEventListener('shown.bs.collapse', function () {
+                    sessionStorage.setItem(menuId, 'open');
+                });
+
+                // 3. Lắng nghe sự kiện khi menu đóng lại
+                collapseEl.addEventListener('hidden.bs.collapse', function () {
+                    sessionStorage.removeItem(menuId);
+                });
+            });
+        });
+block content 
+    .container-fluid
+        .section.card
+            h1.text-center.text-uppercase(style='color:rgb(216, 89, 16)') ADMIN MANAGER
+        .section 
+            if errorMessages && errorMessages.length
+                ul
+                    each message in errorMessages
+                        li(style="color: red;")= message
+            if successMessages && successMessages.length
+                ul
+                    each message in successMessages
+                        li(style="color: green;")= message
+        .section.col-md-12 
+            //- .row.mb-3
+            //-     .col-12
+            //-         .card.p-4.shadow-sm
+            //-             h1.text-center.text-uppercase.m-0(style='color:rgb(216, 89, 16)') ADMIN MANAGER
+
+            .row
+                //- Sidebar Menu (3 columns)
+                .col-md-2
+                    .card.shadow-sm.p-3
+                        ul.list-unstyled
+                            li.mb-2
+                                //- Button toggle cho User Manager
+                                a.btn.btn-primary.w-100.text-start.d-flex.justify-content-between.align-items-center(
+                                    href='#userMenu' 
+                                    data-bs-toggle='collapse' 
+                                    role='button' 
+                                    aria-expanded='false' 
+                                    aria-controls='userMenu'
+                                )
+                                    span 
+                                        i.fas.fa-user-cog.me-2
+                                        | User Manager
+                                    i.fas.fa-chevron-down.small
+                                
+                                //- Nội dung Dropdown (Collapse)
+                                .collapse#userMenu(data-menu-id="user-manager")
+                                    .list-group.mt-2
+                                        a.list-group-item.list-group-item-action.btn#userList
+                                            i.fas.fa-list.me-2
+                                            | Danh sách người dùng
+                                        a.list-group-item.list-group-item-action.btn#addUser
+                                            i.fas.fa-plus.me-2
+                                            | Tạo người dùng
+                            li.mb-2
+                                //- Button toggle cho User Manager
+                                a.btn.btn-primary.w-100.text-start.d-flex.justify-content-between.align-items-center(
+                                    href='#rightsMenu' 
+                                    data-bs-toggle='collapse' 
+                                    role='button' 
+                                    aria-expanded='false' 
+                                    aria-controls='rightsMenu'
+                                )
+                                    span 
+                                        i.fas.fa-user-cog.me-2
+                                        | Rights Manager
+                                    i.fas.fa-chevron-down.small                
+                                .collapse#rightsMenu(data-menu-id="rights-manager")
+                                    .list-group.mt-2
+                                        a.list-group-item.list-group-item-action.btn#rightsManagement
+                                            i.fas.fa-gear.me-2
+                                            | Quản lý phân quyền
+                                        a.list-group-item.list-group-item-action.btn#rightsGroup
+                                            i.fas.fa-cog.me-2
+                                            | Nhóm quyền
+                                        a.list-group-item.list-group-item-action.btn#rightsActive
+                                            i.fas.fa-cog.me-2
+                                            | Phân quyền
+        
+
+                //- Main Table Content (9 columns)
+                .col-md-10
+                    .card.shadow-sm.p-3
+                        #main-content
+                            //- Nội dung bảng của bạn ở đây
+                            iframe#adminFrame(src="" width="100%" height="550px" frameborder="0")
+    script.
+        $(document).ready(function() {
+            $('#addUser').on('click', function(e) {
+                e.preventDefault(); // Chặn thẻ 'a' nhảy trang
+                
+                // Đặt src của iframe bằng đúng cái Route bạn đã tạo ở Bước 1
+                $('#adminFrame').attr('src','/admin/add-user');
+            })
+
+            $('#userList').on('click', function(e) {
+                e.preventDefault(); // Chặn thẻ 'a' nhảy trang
+                
+                // Đặt src của iframe bằng đúng cái Route baise tạo ở Bước 1
+                $('#adminFrame').attr('src','/admin/user-list');
+            })
+            $('#rightsManagement').on('click', function(e) {
+                e.preventDefault(); // Chặn thẻ 'a' nhảy trang
+                
+                $('#adminFrame').attr('src','/rights/rights-management');
+            })
+            $('#rightsGroup').on('click', function(e) {
+                e.preventDefault(); // Chặn thẻ 'a' nhảy trang
+                
+                $('#adminFrame').attr('src','/rights/rights-group');
+            })
+            $('#rightsActive').on('click', function(e) {
+                e.preventDefault(); // Chặn thẻ 'a' nhảy trang
+                
+                $('#adminFrame').attr('src','/rights/rights-active');
+            })
+            
+        })

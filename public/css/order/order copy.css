@@ -1,0 +1,371 @@
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+html,
+body {
+  height: 100%;
+  overflow-y: auto;
+}
+body {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2eafc 100%);
+  font-family: "Segoe UI", "Arial", sans-serif;
+}
+.card {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 16px;
+}
+.btn-primary {
+  background: #d27c31ff;
+  border: none;
+}
+.btn-primary:hover {
+  background: #b86a28;
+}
+
+.order-stats span {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+.form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(210, 124, 49, 0.25);
+}
+.header .card {
+  height: 100%;
+}
+/*
+        hearder title Order 
+        */
+.headerOrder .card {
+  padding: 1rem 2rem;
+}
+
+.headerOrder h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.headerOrder .info-line,
+.customer,
+.service-info .info-line,
+.order-form .info-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding: 0 1rem;
+}
+
+.service-info {
+  font-size: 0.9rem;
+  margin-right: -50px;
+}
+
+.headerOrder .label {
+  font-weight: bold;
+  flex: 1;
+  text-align: left;
+}
+
+.headerOrder .value {
+  flex: 2;
+  text-align: right;
+  white-space: nowrap; /* tránh xuống dòng */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+dialog:not([open]) {
+  display: none;
+}
+#formChooseClient {
+  width: 800px;
+  padding: 10px;
+  margin: 10px auto;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  background: white;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+.divider2 {
+  border-top: 1px dashed #282525ff;
+}
+#formAddItemOrder {
+  width: 1200px;
+  padding: 10px;
+  margin: 10px auto;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  background: white;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+#formAddDiscountNote,
+#formAddOrderNote {
+  width: 1200px;
+  max-height: 700px;
+  padding: 10px;
+  margin: 10px auto;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  background-color: rgba(231, 234, 227, 0.915);
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+#formAddReference {
+  width: 300px;
+  padding: 10px;
+  margin: 10px auto;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  position: fixed;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+  background: white;
+  padding: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+.noteFormContent {
+  background-color: #007bff;
+}
+.dialog-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: white; /* giữ nền khi scroll */
+  padding-bottom: 0.5rem;
+}
+#formAddServiceOrder {
+  display: none;
+}
+/*chỉnh css cho chooseService*/
+.service-box {
+  position: relative;
+  width: 100%;
+  padding-top: 40%; /* tạo hình vuông */
+  background: white;
+  border: 2px solid #007bff;
+  border-radius: 1rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+/* Nội dung bên trong căn giữa tuyệt đối */
+.service-box > i,
+.service-box > .service-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.service-box > i {
+  top: 20%;
+  font-size: 1.5rem;
+  color: #007bff;
+}
+
+.service-box > .service-text {
+  top: 50%;
+  width: 80%;
+  font-size: 1rem;
+  color: #007bff;
+  display: -webkit-box;
+  /*-webkit-line-clamp: 2;*/
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  max-height: 2.4em;
+}
+.service-item {
+  position: relative;
+  width: 100%;
+  padding-top: 0%; /* tạo hình vuông */
+  background: white;
+  border: 2px solid #5abae6ff;
+  border-radius: 1rem;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-align: center;
+  color: #007bff;
+  background-color: #007bff66;
+}
+s
+/* Hiệu ứng hover + chọn */
+.service-box:hover,
+.service-item:hover {
+  background-color: #007bff;
+  transform: scale(1.05);
+}
+
+.service-box:hover i,
+.service-box:hover .service-text {
+  color: #e9b415ff;
+}
+
+.laundry-box:hover i,
+.laundry-box:hover .laundry-text {
+  color: rgb(235, 231, 221);
+}
+
+.service-item:hover {
+  color: #e9b415ff;
+  background: #007bff;
+}
+
+.service-box.selected,
+.laundry-box.selected,
+.service-item.selected {
+  background: #007bff;
+}
+
+.service-box.selected i,
+.service-box.selected .service-text {
+  color: #e9b415ff;
+}
+
+/* Chỉnh css cho TAB ITEMP */
+.tab-header {
+  display: flex;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tab-header .tab-link {
+  margin-right: 1rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 5px 5px 0 0;
+  background-color: #f0f0f0;
+}
+
+.tab-header .tab-link.active {
+  background-color: #fff;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  border-bottom: none;
+}
+
+.tab-content .tab-pane {
+  display: none;
+}
+
+.tab-content .tab-pane.active {
+  display: block;
+}
+
+/*Css cho color */
+.color-box,
+.note-box {
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  object-fit: cover; /* với <img> để giữ tỉ lệ */
+  background-size: cover; /* hoặc contain nếu muốn vừa toàn bộ */
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.divider {
+  border-top: 1px solid #ccc;
+  margin: 1rem 0;
+}
+.note-box {
+  padding-left: 10px;
+}
+.swal2-container {
+  z-index: 99999 !important;
+}
+input[readonly] {
+  text-align: right;
+  border-radius: 10px;
+  border: 1px solid #ac7d7d;
+  background-color: #cfcdc3a8; /* màu xám nhẹ */
+  color: #1d1414; /* chữ vẫn rõ */
+  cursor: not-allowed; /* con trỏ báo không sửa */
+}
+
+input:not([readonly]) {
+  text-align: right;
+  border-radius: 10px;
+  border: 1px solid #6ba26f;
+}
+.textleft {
+  text-align: left !important;
+}
+.textright {
+  text-align: right !important;
+}
+.textcenter {
+  text-align: center !important;
+}
+/* xữ lý dialog note modal*/
+
+/* Card của mỗi note */
+.note-box {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Hover vào card */
+.note-box:hover {
+  border-color: #0d6efd; /* xanh Bootstrap */
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Text trong note */
+.note-box p {
+  margin: 0;
+  font-size: 18px;
+  color: #333;
+  word-wrap: break-word;
+}
+
+/* Khi được chọn (nếu bạn muốn toggle class "active") */
+.note-box.active {
+  border-color: #0d6efd;
+  background: #eaf2ff;
+  box-shadow: 0 4px 14px rgba(13, 110, 253, 0.3);
+}
+#hideLaundry,
+#hideDiscount,
+#hideServiceTotal {
+  display: none;
+}

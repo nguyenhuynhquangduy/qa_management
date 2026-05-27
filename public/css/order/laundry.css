@@ -1,0 +1,52 @@
+/* Sử dụng Flexbox để căn giữa nội dung một cách ổn định */
+.laundry-box {
+  cursor: pointer;
+  min-width: 120px;
+  height: 100px;
+  border: 1px solid rgb(26, 146, 34);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  color: #007bff;
+  background-color: #ecf0f566;
+  margin-top: 20px;
+
+  /* Chuyển sang Flexbox */
+  display: flex;
+  flex-direction: column; /* Xếp các item theo chiều dọc */
+  justify-content: center; /* Căn giữa theo chiều dọc */
+  align-items: center; /* Căn giữa theo chiều ngang */
+  padding: 10px; /* Thêm padding để nội dung không bị sát viền */
+}
+
+/* Bỏ định vị tuyệt đối cho các phần tử con */
+.laundry-box > i,
+.laundry-box > .laundry-text {
+  position: static; /* Bỏ position: absolute */
+  transform: none; /* Bỏ transform */
+  text-align: center;
+}
+
+/* Giữ lại và điều chỉnh style cho icon */
+.laundry-box > i {
+  font-size: 1.5rem;
+  margin-bottom: 8px; /* Tạo khoảng cách giữa icon và chữ */
+}
+
+/* Giữ lại và điều chỉnh style cho chữ */
+.laundry-box > .laundry-text {
+  width: 95%; /* Giới hạn chiều rộng để chữ tự xuống dòng */
+  font-size: 1rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+  max-height: 2.4em; /* Giới hạn hiển thị 2 dòng */
+}
+
+/* Thêm hiệu ứng hover không làm thay đổi layout */
+.laundry-box:hover {
+  background-color: #2886e4; /* Thay đổi màu nền khi hover */
+  border-color: #0056b3;
+}

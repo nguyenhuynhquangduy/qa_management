@@ -1,0 +1,368 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/bootstrap.bundle.min.js")  
+        script(src="/js/sweetalert2@11.js") 
+        style.
+            html, body {
+                height: 100%;
+                overflow-y: auto;
+            }
+            dialog:not([open]) {
+                display: none;
+            }
+            .title-text {
+                color: rgb(16, 103, 216);
+                font-size: 20px;
+                font-weight: 600;
+                text-transform: uppercase;
+                position: relative;
+                z-index: 3;
+                margin-left: 10%;
+                margin-top: 10px;
+                margin-bottom: 20%;
+                bottom: 1px;
+                left: 0;
+                height: 0;
+            }
+            .explorer-container {
+                display: flex;
+                height: 80vh;
+                border: 1px solid #ddd;
+                font-family: sans-serif;
+            }
+            .explorer-col {
+                border-right: 1px solid #ddd;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+            .explorer-col:last-child {
+                border-right: none;
+            }
+            .col-groups { flex: 1; }
+            .col-rights { flex: 2; }
+            .list-group {
+                flex-grow: 1;
+                overflow-y: auto;
+            }
+            .list-group-item {
+                padding: 10px 15px;
+                border-bottom: 1px solid #eee;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .list-group-item:last-child {
+                border-bottom: none;
+            }
+            .list-group-item:hover {
+                background-color: #f5f5f5;
+            }
+            .list-group-item.active {
+                background-color: #007bff;
+                color: white;
+                font-weight: bold;
+            }
+            .action-buttons a {
+                margin-left: 8px;
+                color: #6c757d;
+            }
+            .list-group-item.active .action-buttons a {
+                color: white;
+            }
+            .action-buttons a:hover {
+            color: #0056b3;
+            }
+    body 
+        .container-fluid
+            section.shadow-sm
+                .card-header.bg-white.py-3.text-center
+                    h5.mb-0.text-primary
+                        i.fas.fa-gear.me-2
+                        | QUẢN LÝ PHÂN QUYỀN
+            //- a(href="/services/serviceManager" class="btn btn-outline-secondary")
+            //-     i.fas.fa-arrow-left
+            //-     |  Back
+            if errorMessages && errorMessages.length
+                .alert.alert-danger
+                    each message in errorMessages
+                        div= message
+            if successMessages && successMessages.length
+                .alert.alert-success
+                    each message in successMessages
+                        div= message
+            .explorer-container
+                //- Products Column
+                .explorer-col.col-groups#groups-col.m-2
+                    .col-header
+                        span Nhóm quyền
+                        a(href="#").add-group-btn
+                            i.fas.fa-plus
+                    #groups-list.list-group
+
+                //- Groups Column
+                .explorer-col.col-rights#rights-col.m-2
+                    .col-header
+                        span Phân quyền
+                        a(href="#").add-rights-btn.d-none
+                            i.fas.fa-plus
+                        table.table.table-bordered.table-hover
+                            thead
+                                tr
+                                    th.text-center ID
+                                    th.text-center Tên quyền
+                                    th.text-center Mô tả
+                                    th.text-center Hành động
+                            tbody#rights-list
+                        
+
+            //- Services Column
+            //- .explorer-col.col-services#services-col
+            //-     .col-header
+            //-         span Services
+            //-         a(href="#").add-service-btn.d-none
+            //-             i.fas.fa-plus
+            //-     #services-list.list-group
+        //- .section 
+        //-     br
+        //-     br
+        //-     br
+        //-     br
+        //-     br
+        //-     br
+        //-     br      
+    - const safeRightsGroup = typeof rightsGroup !== 'undefined' ? rightsGroup : [];
+    include _rightsModal.pug    
+    script.
+        const rightsGroupsdata = !{JSON.stringify(safeRightsGroup)};
+
+        console.log("rightsGroupsdata", rightsGroupsdata);
+         
+        $(document).ready(function() {
+
+            $('.add-group-btn').on('click', function(e) {
+                 e.stopPropagation();// Chặn thẻ 'a' nhảy trang
+                $('#createRightGroups')[0].showModal();
+            });
+            $('.closeCreate').on('click', function() {
+                $('#createRightGroups')[0].close();
+            });
+            
+            $('.closeUpdate').on('click', function() {
+                $('#updateRightGroups')[0].close();
+            });
+            $('.add-rights-btn').on('click', function(e) {
+                e.stopPropagation();
+                $('#createRights')[0].showModal();
+                $('#MANQ').val($(this).data('group-id'));
+            });
+            $('.closeCreateRights').on('click', function() {
+                $('#createRights')[0].close();
+            });
+            $('.closeUpdateQuyen').on('click', function() {
+                $('#updateRights')[0].close();
+            });
+            
+
+            const $groupsList = $('#groups-list');
+            const $rightsList = $('#rights-list');
+
+            function renderGroups () {
+                //- $groupsList.html('');
+                $groupsList.empty();// tối ưu bộ nhớ hơn cách trên, cách này dùng jquery dọn dẹp sạch
+                if(!rightsGroupsdata || rightsGroupsdata.length === 0) {
+                    $groupsList.append(`
+                        <div class="list-group-item">Không có nhóm quyền nào được tìm thấy.</div>
+                    `);
+                } else {
+                    rightsGroupsdata.forEach(group => {
+
+                        $groupsList.append(`
+                            <div class="list-group-item d-flex align-items-center justify-content-between" data-group-id="${group.MANQ}">
+                                
+                                <div class="me-2 list-content flex-grow-1" data-group-id="${group.MANQ}">
+                                    <span class="me-2">${group.MANQ}</span>
+                                    <span>${group.TenNQ}</span>
+                                </div>
+
+                                <div class="action-buttons">
+                                    <a href="#" class="edit-group-btn" data-group-id="${group.MANQ}">
+                                        <i class="fas fa-pencil-alt px-2"></i>
+                                    </a>
+                                    <a href="#" class="delete-group-btn" data-group-id="${group.MANQ}">
+                                        <i class="fas fa-trash px-2"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        `);
+
+
+                    });
+
+                }
+            }
+            //- function renderRights(dataRights) {
+            //-     $rightsList.empty();
+            //-     dataRights.forEach(data => {
+            //-         $rightsList.append(`
+            //-         <div class="d-flex align-items-center justify-content-between" data-rights-id="${data.id}">
+
+            //-             <span class="rights-id">ID: ${data.id}</span>
+            //-             <span class="rights-name">${data.tenquyen}</span>
+            //-             <span class="rights-description">${data.description}</span>
+                    
+            //-             <div class="action-buttons">
+            //-                 <a href="#" class="edit-rights-btn" data-group-id="${data.id}">
+            //-                     <i class="fas fa-pencil-alt px-2"></i>
+            //-                 </a>
+            //-                 <a href="#" class="delete-rights-btn" data-group-id="${data.id}">
+            //-                     <i class="fas fa-trash px-2"></i>
+            //-                 </a>
+            //-             </div>
+            //-         </div>    
+            //-     `);
+            //-     })
+            //- }
+
+            //làm lại render theo cấu trúc bảng
+            function renderRights(dataRights) {
+                $rightsList.empty();
+
+                if (!Array.isArray(dataRights) || dataRights.length === 0) {
+                    $rightsList.append(`
+                        <tr>
+                            <td colspan="4" class="text-center">Không có quyền nào</td>
+                        </tr>
+                    `);
+                    return;
+                }
+
+                dataRights.forEach(data => {
+                    $rightsList.append(`
+                        <tr data-rights-id="${data.id}" class="text-center">
+                            <td>${data.id}</td>
+                            <td>${data.tenquyen}</td>
+                            <td>${data.description || ''}</td>
+                            <td>
+                                <a href="#" class="edit-rights-btn me-2" data-rights-id="${data.id}">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </a>
+                                <a href="#" class="delete-rights-btn" data-rights-id="${data.id}">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                });
+            }
+
+            $('#groups-list').on('click', '.list-content', function(e) {
+                e.stopPropagation();
+                
+                // Highlight the selected group
+                $('.list-group-item').removeClass('active');
+                $(this).closest('.list-group-item').addClass('active');
+
+                // Save selected group ID in localStorage
+                const groupId = $(this).data('group-id');
+                localStorage.setItem('selectedGroupId', groupId); // Save selected group ID
+                /*
+                localStorage là một "bộ nhớ" nhỏ của trình duyệt. Dữ liệu lưu ở đây sẽ không bị mất khi bạn tải lại trang.
+                setItem là lệnh "lưu một mục".
+                'selectedGroupId' là "tên" (key) của mục dữ liệu chúng ta muốn lưu.
+                groupId là "giá trị" chúng ta lưu, chính là ID của nhóm bạn đã chọn.
+                */
+                $rightsList.empty();
+                const findGroup = rightsGroupsdata.find(group => group.MANQ === groupId);
+                const dataRights = findGroup ? findGroup.phanquyen : {};
+                console.log("data", dataRights);
+                renderRights(dataRights);
+                $('.add-rights-btn').removeClass('d-none').data('group-id', $(this).data('group-id'));
+            })
+            $('#rights-list').on('click', '.edit-rights-btn', function(e) {
+                e.stopPropagation();
+                const rightsId = $(this).data('rights-id');
+                const activeGroupId = $('.add-rights-btn').data('group-id');
+                
+                const group = rightsGroupsdata.find(g => g.MANQ == activeGroupId);
+                
+                if (group && group.phanquyen) {
+                    const findRights = group.phanquyen.find(rights => rights.id == rightsId);
+                    if (findRights) {
+                        $('#updateRights')[0].showModal();
+                        $('#updateQuyen').val(findRights.tenquyen);
+                        $('#updateDescription').val(findRights.description);
+                        $('#updateRightsId').val(findRights.id);
+                    }
+                }
+            });
+           $('#rights-list').on('click', '.delete-rights-btn', function(e) {
+                e.stopPropagation();
+                const rightsId = $(this).data('rights-id');
+                handleDelete(rightsId, '/rights/rights-delete', 'rights');
+           })
+            // Sử dụng event delegation vì các nút edit/delete được tạo động
+            $('#groups-list').on('click', '.edit-group-btn', function(e) {
+                e.preventDefault();
+                const groupId = $(this).data('group-id');
+                $('#updateRightGroups')[0].showModal();
+                const group = rightsGroupsdata.find(group => group.MANQ === groupId);
+                if (group) {
+                    $('#updateTenNQ').val(group.TenNQ);
+                    $('#updateMANQ').val(group.MANQ);
+                }
+            });
+
+            $('#groups-list').on('click', '.delete-group-btn', function(e) {
+                e.preventDefault();
+                handleDelete($(this).data('group-id'), '/rights/rights-group-delete', 'group');
+            });
+         
+            // DELETE
+            function handleDelete(id, url, type) {
+                Swal.fire({
+                    title: `Xoá ?`,
+                    text: "Bản xác nhận xoá!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Xác nhận'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `${url}?id=${id}`;
+                    }
+                });
+            }
+
+            // Gọi hàm renderGroups lần đầu tiên khi trang load
+            renderGroups();
+
+            // Restore selected group on page load
+            const selectedGroupId = localStorage.getItem('selectedGroupId');
+            if (selectedGroupId) {
+                // tìm kiếm trên trang phần tử HTML của nhóm có data-group-id khớp với ID đã được lưu trên localStorage
+                const groupContent = $(`.list-content[data-group-id="${selectedGroupId}"]`);
+                /*
+                groupContent.trigger('click');: Đây là "phép màu".
+                    trigger('click') là một lệnh của jQuery để giả lập một cú nhấp chuột vào phần tử đã tìm thấy.
+                    Khi cú nhấp chuột "ảo" này xảy ra, nó sẽ kích hoạt lại đoạn mã ở Phần 1. 
+                    Kết quả là, danh sách quyền tương ứng sẽ được tải, và nhóm đó sẽ được tô sáng,
+                    y hệt như khi bạn tự tay nhấp vào nó.
+                */
+                if (groupContent.length) {
+                    groupContent.trigger('click');
+                }
+            }
+        });

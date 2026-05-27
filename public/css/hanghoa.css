@@ -1,0 +1,8 @@
+#imageDetails img {
+    width: 250px;              /* Chiều rộng khung ảnh */
+    height: auto;             /* Chiều cao khung ảnh */
+    object-fit: cover;         /* Cắt ảnh cho vừa khung, không méo hình */
+    border: 2px solid #ccc;    /* Viền ảnh */
+    border-radius: 8px;        /* Bo góc nhẹ (có thể bỏ nếu không cần) */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
+}

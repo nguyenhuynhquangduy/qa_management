@@ -1,0 +1,143 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/bootstrap.bundle.min.js")   
+        style.
+            body { background-color: #f8f9fa; padding: 10px; }
+            .card { border: none; shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+            .error-feedback { color: #dc3545; font-size: 0.875em; display: none; }
+    body
+        .container
+            .card.shadow-sm
+                .card-header.bg-white.py-3
+                    h5.mb-0.text-primary
+                        i.fas.fa-user-plus.me-2
+                        | THÊM TÀI KHOẢN MỚI
+                    div 
+                        if errorMessages && errorMessages.length
+                            ul
+                                each message in errorMessages
+                                    li(style="color: red;")= message
+                        if successMessages && successMessages.length
+                            ul
+                                each message in successMessages
+                                    li(style="color: green;")= message    
+                .card-body
+                    form#formAddUser(action="/admin/add-user" method="POST")
+                        -console.log('Rendering addUser.pug with errorMessages:', errorMessages)
+                        -console.log('Nhìn thấy hàng này')
+                        .row
+                            //- Username
+                            .col-md-6.mb-3
+                                label.form-label(for="username") Tên đăng nhập (Username)
+                                input#username.form-control(type="text" name="username" placeholder="Chỉ dùng chữ và số" required)
+                                .error-feedback#usernameError Không được chứa khoảng trắng hoặc ký tự đặc biệt.
+
+                            //- Fullname
+                            .col-md-6.mb-3
+                                label.form-label(for="fullname") Họ và tên
+                                input#fullname.form-control(type="text" name="fullname" placeholder="Nguyễn Văn A")
+
+                            //- Password
+                            .col-md-6.mb-3
+                                div.form-group
+                                    label.form-label(for="password") Mật khẩu
+                                    .input-group
+                                        input#password.form-control(type="password" name="password" autocomplete='new-password' required)
+                                        span.input-group-text.toggle-password(style='cursor:pointer')
+                                            i.fas.fa-eye
+                            //- Email
+                            .col-md-6.mb-3
+                                label.form-label(for="email") Email
+                                input#email.form-control(type="email" name="email" placeholder="example@gmail.com" required)
+                                .error-feedback#emailError Email không được chứa khoảng trắng.
+
+                            //- Phone
+                            .col-md-6.mb-3
+                                label.form-label(for="phone") Số điện thoại
+                                input#phone.form-control(type="text" name="phone")
+
+                            //- Address
+                            .col-md-6.mb-3
+                                label.form-label(for="address") Địa chỉ
+                                input#address.form-control(type="text" name="address")
+
+                            //- Status (Select)
+                            .col-md-6.mb-3
+                                label.form-label(for="status") Trạng thái
+                                select#status.form-select(name="status")
+                                    option(value="active" selected) Active
+                                    option(value="inactive") Inactive
+
+                            //- Admin (Checkbox)
+                            .col-md-6.mb-3.d-flex.align-items-end
+                                .form-check.mb-2
+                                    input#admin.form-check-input(type="checkbox" name="admin" value="1")
+                                    label.form-check-label(for="admin") Quyền Quản trị (Admin)
+
+                        hr
+                        .text-end
+                            button.btn.btn-secondary.me-2(type="reset") Làm lại
+                            button.btn.btn-primary(type="submit") 
+                                i.fas.fa-save.me-2
+                                | Lưu người dùng
+
+        script.
+            document.addEventListener('DOMContentLoaded', function() {
+                const usernameInput = document.getElementById('username');
+                const emailInput = document.getElementById('email');
+                const form = document.getElementById('formAddUser');
+
+                // 1. Ngăn ký tự đặc biệt và khoảng trắng cho Username
+                usernameInput.addEventListener('input', function() {
+                    const regex = /^[a-zA-Z0-9.]*$/;
+                    if (!regex.test(this.value)) {
+                        this.classList.add('is-invalid');
+                        document.getElementById('usernameError').style.display = 'block';
+                    } else {
+                        this.classList.remove('is-invalid');
+                        document.getElementById('usernameError').style.display = 'none';
+                    }
+                });
+
+                // 2. Ngăn khoảng trắng cho Email
+                emailInput.addEventListener('input', function() {
+                    if (this.value.includes(' ')) {
+                        this.value = this.value.replace(/\s/g, '');
+                        document.getElementById('emailError').style.display = 'block';
+                    } else {
+                        document.getElementById('emailError').style.display = 'none';
+                    }
+                });
+
+                // 3. Kiểm tra lần cuối trước khi submit
+                form.addEventListener('submit', function(e) {
+                    const usernameRegex = /^[a-zA-Z0-9.]+$/;
+                    if (!usernameRegex.test(usernameInput.value)) {
+                        e.preventDefault();
+                        alert('Username không hợp lệ!');
+                    }
+                });
+                  //Bật tắt password trong form
+                $('.toggle-password').on('click', function () {
+                const input = $('#password');
+                const icon = $(this).find('i');
+
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+                });
+            });

@@ -1,0 +1,188 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+     
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/bootstrap.bundle.min.js")     
+        style.
+            body { background-color: #fff; padding: 15px; }
+            .table img { width: 35px; height: 35px; object-fit: cover; border-radius: 50%; }
+            .badge-active { background-color: #28a745; }
+            .badge-inactive { background-color: #6c757d; }
+            .table-container { border-radius: 8px; overflow: hidden; }
+            .search-box { max-width: 300px; }
+            dialog:not([open]) {
+                display: none;
+            }
+            #update-dialog {
+                min-width: 800px;
+                max-width: 1200px;
+                border: none;
+                border-radius: 18px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 6px rgba(216,89,16,0.08);
+                background: linear-gradient(135deg, #fff 80%, #f8fafc 100%);
+                padding: 32px 24px 24px 24px;
+                position: relative;
+                animation: dialogFadeIn 0.35s;
+            }
+    body
+        .container-fluid
+            //- Thanh công cụ trên cùng
+            .d-flex.justify-content-between.align-items-center.mb-3
+                .search-box
+                    form.input-group.input-group-sm(action="/admin/user-list", method="GET")
+                        span.input-group-text.bg-white
+                            i.fas.fa-search.text-muted
+                        input.form-control(type="text" name="search" placeholder="Tìm người dùng...")
+                
+                a.btn.btn-sm.btn-outline-primary(href="/admin/user-list")
+                    i.fas.fa-sync-alt.me-1
+                    | Làm mới
+            .section 
+                if errorMessages && errorMessages.length
+                    ul
+                        each message in errorMessages
+                            li(style="color: red;")= message
+                if successMessages && successMessages.length
+                    ul
+                        each message in successMessages
+                            li(style="color: green;")= message
+            //- Bảng danh sách
+            .table-container.shadow-sm
+                table.table.table-hover.align-middle.mb-0
+                    thead.table-light
+                        tr
+                            th.ps-3(style="width: 50px") #
+                            th Người dùng
+                            th Liên hệ
+                            th Quyền
+                            th Trạng thái
+                            th.text-end.pe-3 Thao tác
+                    tbody
+                        if users && users.length > 0
+                            each user, index in users
+                                tr
+                                    td.ps-3.text-muted= index + 1
+                                    td
+                                        .d-flex.align-items-center
+                                            img.me-2(src=user.avatar || '/image/default.png' alt="avatar")
+                                            div
+                                                div.fw-bold= user.username
+                                                small.text-muted= user.fullname
+                                    td
+                                        div: small
+                                            i.fas.fa-envelope.me-1.text-muted
+                                            = user.email
+                                        div: small
+                                            i.fas.fa-phone.me-1.text-muted
+                                            = user.phone || 'N/A'
+                                    td
+                                        if user.admin == 1
+                                            span.badge.rounded-pill.bg-danger Admin
+                                        else
+                                            span.badge.rounded-pill.bg-info.text-dark Member
+                                    td
+                                        if user.status === 'active'
+                                            span.badge.badge-active Active
+                                        else
+                                            span.badge.badge-inactive Inactive
+                                    td.text-end.pe-3
+                                        .btn-group.btn-group-sm
+                                            button.btn.btn-outline-secondary.edit-btn(type="button" data-username=user.username data-fullname=user.fullname data-email=user.email data-phone=user.phone data-address=user.address data-status=user.status data-admin=user.admin data-matk=user.MATK)
+                                                i.fas.fa-edit
+                                            button.btn.btn-outline-danger(onclick=`deleteUser(${user.MATK})` title="Xóa")
+                                                i.fas.fa-trash
+                        else
+                            tr
+                                td.text-center.py-4(colspan="6") Không có người dùng nào được tìm thấy.
+            .section 
+                dialog#update-dialog(style='position: fixed; top: 10%; left: 30%; transform: translateX(-50%); z-index: 1050; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.3);') 
+                    .text-end
+                        button.button.btn.btn-danger.btn-sm.close-btn(type="button") ×
+                    form#update-form.form-horizontal(method='POST', action='/admin/update-user')
+                        .row
+                            .col-md-6
+                                input(type='hidden' name='MATK' id='update-MATK')
+                                .row
+                                    div.form-group
+                                        label(for='update-username') Username
+                                        input.form-control(type='text' name='username' id='update-username' required)
+                                    div.form-group
+                                        label(for='update-password') Password
+                                        .input-group
+                                            input.form-control.password(type='password' name='password' id='update-password' autocomplete='new-password' placeholder="********")
+                                            span.input-group-text.toggle-password(style='cursor:pointer')
+                                                i.fas.fa-eye
+                                div.form-group
+                                    label(for='update-isadmin') Admin
+                                    input(type='checkbox' name='admin' id='update-isadmin' value='1')        
+                                .form-group.mt-4 
+                                    h5.text-uppercase.text-center(style='color:green') THÔNG TIN CÁ NHÂN  
+                            .col-md-6
+                                div.form-group
+                                    label(for='update-fullname') Fullname
+                                    input.form-control(type='text' name='fullname' id='update-fullname')
+                                div.form-group
+                                    label(for='update-email') Email
+                                    input.form-control(type='email' name='email' id='update-email')
+                                div.form-group
+                                    label(for='update-phone') Phone
+                                    input.form-control(type='text' name='phone' id='update-phone')
+                                div.form-group
+                                    label(for='update-address') Address
+                                    input.form-control(type='text' name='address' id='update-address')
+                                div.form-group
+                                    label(for='update-status') Status
+                                    select.form-select(name='status' id='update-status')
+                                        option(value='active' selected) Active
+                                        option(value='inactive') Inactive
+
+                        .d-flex.justify-content-center.mt-3        
+                            //- button.btn.btn-block.btn-default#target4.text-uppercase= __('save')
+                            button.btn.btn-secondary(type='button' id='update-cancel-btn') Cancel
+                            button.btn.btn-primary.target.ml-2(type='submit' id='update-save-btn') Save
+
+        script.
+            function deleteUser(id) {
+                if(confirm('Bạn có chắc chắn muốn xóa người dùng này?')) {
+                    // Logic gửi request xóa đến server
+                    console.log('Xóa user ID:', id);
+                }
+            }
+            $(document).ready(function() {
+                $('.edit-btn').on('click', function() {
+                  $('#update-dialog')[0].showModal();
+                    $('#update-MATK').val($(this).data('matk'));
+                    $('#update-username').val($(this).data('username'));
+                    $('#update-fullname').val($(this).data('fullname'));
+                    $('#update-email').val($(this).data('email'));
+                    $('#update-phone').val($(this).data('phone'));
+                    $('#update-address').val($(this).data('address'));
+                    $('#update-status').val($(this).data('status'));
+                    $('#update-isadmin').prop('checked', $(this).data('admin') == 1);
+                })
+                $('#update-cancel-btn, .close-btn').on('click', function() {
+                    $('#update-dialog')[0].close();
+                })
+                  //Bật tắt password trong form
+                $('.toggle-password').on('click', function () {
+                const input = $('.password');
+                const icon = $(this).find('i');
+
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+                });
+            })

@@ -1,0 +1,117 @@
+extends ./layout
+
+block head
+    link(rel='stylesheet', href='./css/index.css')
+    style.
+        body {
+            background: linear-gradient(
+                45deg,
+                rgba(102, 51, 153, 0.8),
+                rgba(30, 144, 255, 0.8),
+                rgba(0, 128, 0, 0.8)
+            ), url(../images/background2.png);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-blend-mode: overlay;
+        }
+        .main-section {
+            position: relative;
+            padding-top: 50px;
+            padding-bottom: 100px;
+            min-height: 100vh;
+        }
+        input {
+            background: rgba(255, 255, 255, 0.93); /* Semi-transparent background for better readability */
+        }
+
+block content   
+    .container-fluid.main-section.overflow-hidden     
+            .card-body.d-flex.justify-content-center.align-items-center
+                    h1.mb-4.text-uppercase(style='color:rgb(234, 152, 11);margin-bottom: 10%; border: 2px solid #ccc; border-radius: 5px; padding: 10px;background-color: #f6f1f1;opacity: 0.9;')
+                        img(src='images/welcome.png', alt='welcome', style='width: 300px; margin-left: 10px;')
+                    div(style='padding-bottom: 15%;') 
+          
+                    //- if currentLocale === 'en'
+                    //-     a.button.btn.btn-sm(href='/lang/vi') TIẾNG VIỆT
+                    //- else if currentLocale === 'vi'
+                    //-     a.button.btn.btn-sm(href='/lang/en') ENGLISH
+            .card-body.d-flex.justify-content-center.align-items-center       
+                    if errorMessages && errorMessages.length
+                        ul
+                            each message in errorMessages
+                                li(style="color: red;")= message
+                    if successMessages && successMessages.length
+                        ul
+                            each message in successMessages
+                                li(style="color: green;")= message        
+            .card-body.d-flex.justify-content-center.align-items-center
+                    form.form-login(id='signin', action='/signin', method='POST')
+                        .input-group.form-group.mb-3
+                            span.input-group-text
+                                i.fas.fa-user
+                            input.form-control(type='text'  name="username" placeholder="Username" required=true)
+                        .input-group.form-group.mb-3
+                            span.input-group-text
+                                i.fas.fa-key
+                            input.form-control.password(type='password' name="password" placeholder="Password" required=true)
+                            span.input-group-text.toggle-password(style='cursor:pointer')
+                                i.fas.fa-eye
+                        //- .row.align-items-center.remember
+                        //-     input(type='checkbox')
+                        //-     | Remember Me
+                        .form-group.pd-2
+                            input.btn(type='checkbox' name='remember' value='1')
+                            span.text-white  Remember Me
+                        .form-group.mt-2
+                            input.btn.float-right.login_btn(type='submit'  value="Sign In")
+           
+            //- .container.col-md-3
+            //-     .banner-top
+            //-         .banner-img
+            //-             img(src='images/1.png')                   
+                    
+    script.
+        $(document).ready(function() {
+            $('.toggle-password').on('click', function () {
+            const input = $('.password');
+            const icon = $(this).find('i');
+
+            if (input.attr('type') === 'password') {
+                input.attr('type', 'text');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            } else {
+                input.attr('type', 'password');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            }
+            });
+
+            // Remember Me functionality
+            const rememberMeCheckbox = $('input[name="remember"]');
+            const usernameInput = $('input[name="username"]');
+            const passwordInput = $('input[name="password"]');
+            const loginForm = $('#signin');
+
+            // Check for saved credentials on page load
+            if (localStorage.getItem('rememberMe') === 'true') {
+                usernameInput.val(localStorage.getItem('username'));
+                passwordInput.val(localStorage.getItem('password'));
+                rememberMeCheckbox.prop('checked', true);
+            }
+
+            // Save or clear credentials on form submit
+            loginForm.on('submit', function() {
+                if (rememberMeCheckbox.is(':checked')) {
+                    localStorage.setItem('rememberMe', 'true');
+                    localStorage.setItem('username', usernameInput.val());
+                    // Security Note: Storing passwords in localStorage is not recommended for production environments.
+                    localStorage.setItem('password', passwordInput.val());
+                } else {
+                    localStorage.setItem('rememberMe', 'false');
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('password');
+                }
+            });
+        });
+        

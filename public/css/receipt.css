@@ -1,0 +1,102 @@
+body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12px;
+    background: #f0f0f0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.receipt {
+    width: 75mm;
+    background: white;
+    padding: 10px 40px 10px 40px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.header, .footer {
+    text-align: center;
+}
+
+h2 {
+    margin: 4px 0;
+}
+
+.item-row, .row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+.item-row {
+  margin-bottom: 8px;
+}
+
+.label {
+  flex: 1;
+}
+
+/* Dòng chứa info-left và value */
+.row-info {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 16px; /* 👈 Khoảng cách lề trái */
+  margin-top: 2px;
+}
+
+.info-left {
+  font-size: 0.95em;
+  color: #444;
+}
+
+.value {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.label {
+    flex: 1;
+}
+
+
+.bold {
+    font-weight: bold;
+}
+
+.success {
+    color: green;
+}
+
+.primary {
+    color: blue;
+}
+
+button#printBtn {
+    margin-top: 10px;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+/* In ấn */
+/*
+@media print {
+    body {
+        all: unset;
+        font-family: Calibri;
+        font-size: 10px;
+    }
+
+    .receipt {
+        width: 100%;
+        padding: 5px;
+        box-shadow: none;
+    }
+
+    button {
+        display: none !important;
+    }
+
+    .row {
+        margin-bottom: 2px;
+    }
+}
+    */

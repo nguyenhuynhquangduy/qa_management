@@ -1,0 +1,69 @@
+
+.left-sidebar h1.panel-title {
+    color: #9f7145;
+    font-family: "Times New Roman", serif;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 3;
+    margin-left: 10%;
+    margin-top: 10px;
+    margin-bottom: 20%;
+    bottom: 1px;
+    left: 0;
+    height: 0;
+}
+
+.left-sidebar h3, .brands_products h3 {
+    color: #be3a0e;
+    font-family: "Times New Roman", serif;
+    font-size: 18px;
+    font-weight: 500;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 3;
+    margin-left: 10%;
+    margin-top: 5px;
+}
+
+.left-sidebar h3:after, h3.title:after {
+    content: " ";
+    position: absolute;
+    border: 1px solid #d45506;
+    bottom: 1px;
+    left: 0;
+    width: 100%;
+    height: 0;
+    z-index: -2;
+
+}
+
+.text-center .card .thead {
+    font-family: "Times New Roman", serif;
+    font-size: 90%;
+
+}
+
+.text-center .card .tbody {
+    font-family: "Times New Roman", serif;
+    font-size: 16px;
+
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    font-size: 14px;
+
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+    margin-left: 5px;
+    margin-right: 5px;
+    font-size: 14px;
+}

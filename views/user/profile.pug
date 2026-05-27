@@ -1,0 +1,109 @@
+extends ../layout
+block head
+    link(rel="stylesheet" href='/css/jquery-ui.css')
+    link(rel="stylesheet" href='/css/all.min.css')
+    link(rel="stylesheet" href='/css/order/order.css')
+    script(src='/js/jquery-3.6.0.min.js')
+    script(src='/js/jquery-ui.min.js')
+    script(src="/js/sweetalert2@11.js")
+    style.
+        #formChangePassword ,#formSetPasswordMail{
+            width: 400px;
+            padding: 10px;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            border-radius: 15px;
+            position: fixed;
+            top: 20%;
+            /*
+            left: 50%;
+            transform: translateX(-50%);
+            */
+            z-index: 1050;
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            }
+            .hidden {
+                display: none;
+            }
+block content 
+    if errorMessages && errorMessages.length
+            ul
+                each message in errorMessages
+                    li(style="color: red;")= message
+    if successMessages && successMessages.length
+            ul
+                each message in successMessages
+                    li(style="color: green;")= message
+    .container-fluid
+        .section
+            .g-4.header.text-center.text-uppercase.text-primary
+                h1 PROFILE
+        .section
+            .row.col-md-12
+                .form-group.col-md-4
+                    #changepassword.my-2
+                        button.button.btn.btn-warning.btn-sm#btnChangePassword.text-white(type="button") Change Password
+                    #worklogs-forOne.my-2.hidden 
+                        button.button.btn.btn-warning.btn-sm#btnSetPasswordMail.text-white(type="button") Set Email
+                    .form-row.well.mt-2.col-md-12.d-flex.justify-content-between.align-items-center
+                .form-group.col-md-4
+                        - let userPassword ; 
+                        - if (user.passwordEmail == null){userPassword = "None"} else {userPassword = "*******" } 
+                        p Username: #{user.username}
+                        p Fullname: #{user.fullname}
+                        p Phone: #{user.phone}
+                        p Address: #{user.address}
+                        p Email: #{user.email}
+                        p Password Mail: #{userPassword}
+                .form-group.col-md-4
+
+        .section 
+            dialog#formChangePassword
+                form#formChangePasswordForm.p-3.bg-light.rounded.shadow(style="max-height: 600px; overflow-y: auto;" action="/users/change-password" method="post")
+                    .from-group          
+                            .form-group
+                                label(for='password') Password
+                                input.form-control(type='password' name='password' id='password' required)
+                            .form-group
+                                label(for='newPassword') New Password
+                                input.form-control(type='password' name='newPassword' id='newPassword' required)
+                            .form-group
+                                label(for='confirmPassword') Confirm Password
+                                input.form-control(type='password' name='confirmPassword' id='confirmPassword' required)
+                            .form-group.d-flex.justify-content-center
+                                button.btn.btn-danger.btnCloseFormChangePassword.mx-2(type="button") Cancel
+                                button.btn.btn-success(type="submit") OK
+            dialog#formSetPasswordMail
+                form#formSetPasswordMailForm.p-3.bg-light.rounded.shadow(style="max-height: 600px; overflow-y: auto;" action="/users/set-password-mail" method="post")
+                    .from-group          
+                            .form-group
+                                - let Email ;
+                                - if (user.email == null){ Email = "None" } else { Email = user.email } 
+                                label(for='email') Email
+                                input.form-control(type='email' name='email' id='email' value=Email required)
+                                input(type='hidden' name='MATK' id=MATK value=user.MATK)
+                            .form-group
+                                label(for='passwordMail') Password Mail
+                                input.form-control(type='password' name='passwordMail' id='passwordMail' required)
+                            .form-group.d-flex.justify-content-center
+                                button.btn.btn-danger.btnCloseFormSetPassword.mx-2(type="button") Cancel
+                                button.btn.btn-success(type="submit") OK           
+    script.
+        $(function () {
+          $("#btnSetPasswordMail" ).click(function() {
+                $( "#formSetPasswordMail" )[0].showModal();
+            });
+            $(".btnCloseFormSetPassword").click(function() {
+                    $( "#formSetPasswordMail" )[0].close();
+          })
+            $("#btnChangePassword" ).click(function() {
+                    $( "#formChangePassword" )[0].showModal();
+                });                        
+            $(".btnCloseFormChangePassword").click(function() {
+                    $( "#formChangePassword" )[0].close();
+                 });
+            
+        })
+      

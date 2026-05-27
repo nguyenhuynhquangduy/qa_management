@@ -1,0 +1,101 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/bootstrap.bundle.min.js")   
+        style.
+            body { background-color: #f8f9fa; padding: 10px; }
+            .card { border: none; shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+            .error-feedback { color: #dc3545; font-size: 0.875em; display: none; }
+            dialog:not([open]) {
+                display: none;
+            }
+            #createRightGroups {
+                min-width: 400px;
+                max-width: 800px;
+                border: none;
+                border-radius: 18px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 6px rgba(216,89,16,0.08);
+                background: linear-gradient(135deg, #fff 80%, #f8fafc 100%);
+                position: relative;
+                animation: dialogFadeIn 0.35s;
+            }
+    body
+        .container
+            section.card.shadow-sm
+                .card-header.bg-white.py-3.text-center
+                    h5.mb-0.text-primary
+                        i.fas.fa-gear.me-2
+                        | QUẢN LÝ NHÓM QUYỀN
+                        button.btn.btn-primary.ml-2#addRightsGroup(type="button")
+                            i.fas.fa-plus
+                    div 
+                        if errorMessages && errorMessages.length
+                            ul
+                                each message in errorMessages
+                                    li(style="color: red;")= message
+                        if successMessages && successMessages.length
+                            ul
+                                each message in successMessages
+                                    li(style="color: green;")= message    
+            section.card
+                table.table.table-hover.align-middle.mb-0
+                    thead.table-light.card-body
+                        tr
+                            th.ps-3(style="width: 50px") #
+                            th MANQ
+                            th Tên nhóm
+                            th.text-end.pe-3 Thao tác
+                    tbody#rightsGroupList
+                        if rightsGroup && rightsGroup.length > 0
+                            each rg, index in rightsGroup
+                                tr
+                                    td.ps-3.text-muted= index + 1
+                                    td= rg.MANQ
+                                    td= rg.TenNQ
+                                    td.text-end.pe-3
+                                        .btn-group.btn-group-sm
+                                            button.btn.btn-outline-secondary.edit-btn(type="button" data-manq=rg.MANQ data-tennq=rg.TenNQ)
+                                                i.fas.fa-edit
+                                            button.btn.btn-outline-danger(onclick=`deleteRightsGroup(${rg.MANQ})` title="Xóa")
+                                                i.fas.fa-trash
+                        else
+                            tr
+                                td.text-center.py-4(colspan="4") Không có nhóm quyền nào được tìm thấy.
+            section.card.shadow-sm
+                dialog#createRightGroups 
+                    .text-end
+                        button.button.btn.btn-danger.btn-sm.closeCreate(type="button") ×
+                    form.form-horizontal(action="/rights/rights-group-add", method="POST")
+                        .card-header.bg-white.py-3.text-center
+                            h5.mb-0.text-primary
+                                i.fas.fa-plus.me-2
+                                | Thêm nhóm quyền
+                        .card-body
+                            div.form-group
+                                label(for='TenNQ') Tên nhóm
+                                input.form-control(type='text' name='TenNQ' id='TenNQ' required)
+                        .card-footer.text-center
+                            button.btn.btn-primary(type="submit") Thêm
+                            button.btn.btn-outline-secondary.closeCreate(type="button" data-bs-dismiss="modal") Huỷ
+                dialog#updateRightGroups
+    script.
+        $(document).ready(function() {
+            $('#addRightsGroup').on('click', function() {
+                $('#createRightGroups')[0].showModal();
+            });
+            $('.closeCreate').on('click', function() {
+                $('#createRightGroups')[0].close();
+            });
+
+
+        });                                    
+                    
