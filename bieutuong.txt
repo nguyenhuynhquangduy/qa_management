@@ -1,0 +1,20 @@
+Chức năng	Class
+Thêm	.fas.fa-plus
+Thêm (tròn)	.fas.fa-plus-circle
+Thêm (vuông)	.fas.fa-plus-square
+Sửa	.fas.fa-edit
+Sửa (bút chì)	.fas.fa-pencil-alt
+Xóa	.fas.fa-trash
+Xóa (thùng rác có dấu X)	.fas.fa-trash-alt
+Xem	.fas.fa-eye
+Chi tiết	.fas.fa-info-circle
+Lưu	.fas.fa-save
+Hủy	.fas.fa-times
+Tìm kiếm	.fas.fa-search
+Làm mới	.fas.fa-sync-alt
+Tải xuống	.fas.fa-download
+Tải lên	.fas.fa-upload
+In	.fas.fa-print
+Sao chép	.fas.fa-copy
+Menu hành động	.fas.fa-ellipsis-v
+Cài đặt	.fas.fa-cog

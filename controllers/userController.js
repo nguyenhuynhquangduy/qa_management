@@ -1,12 +1,12 @@
 const db = require("../models/index");
 // require('dotenv').config();
 // const moment = require('moment');
-const { Op, where } = require("sequelize");
+// const { Op, where } = require("sequelize");
 const bcrypt = require('bcrypt');
 const salt = Number(process.env.SALT);
 const crypto = require('crypto');
 const { raw } = require("body-parser");
-const { create } = require("domain");
+// const { create } = require("domain");
 const moment = require('moment-timezone');
 
 
