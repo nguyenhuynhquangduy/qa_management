@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       dm_sanpham.hasMany(models.dm_sanpham_hoatchat, {
         foreignKey: 'idDmSanPham',
-        as: 'dm_sanpham_hoatchats'
+        as: 'hoatchats'
       });
     }
   }
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     dangBaoChe: DataTypes.STRING,
     quyCachDongGoi: DataTypes.STRING,
     ghiChu: DataTypes.STRING,
-    status: DataTypes.STRING
+    status: { type: DataTypes.STRING, defaultValue: 'active' }
   }, {
     sequelize,
     modelName: 'dm_sanpham',

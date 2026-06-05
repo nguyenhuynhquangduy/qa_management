@@ -7,5 +7,5 @@ npx sequelize model:generate --name dapvien --attributes losanxuatId:integer,KLV
 npx sequelize model:generate --name thanhpham --attributes losanxuatId:integer,ngayKiem:date,loCF:date,KLV:string,tapDon:string,tapKhac:string,tap4Amino:string,tongTap:string,doMinLon:string,doMinNho:string,soSaiLech:string,soKiemSoatThayDoi:string,ghiChu:string
 npx sequelize model:generate --name import_history --attributes fileName:string,tongDong:string,thanhCong:string,thatBai:string,nguoiThucHien:string,thoiGian:date,logLoi:text
 npx sequelize model:generate --name dm_sanpham --attributes tenSanPham:string,soDangKy:string,dangBaoChe:string,quyCachDongGoi:string,ghiChu:string,status:string
-//npx sequelize model:generate --name dm_hoatchat --attributes tenHoatChat:string,ghiChu:string,status:string
+npx sequelize model:generate --name dm_hoatchat --attributes tenHoatChat:string,ghiChu:string,status:string
 npx sequelize model:generate --name dm_sanpham_hoatchat --attributes tenHoatChat:string,ghiChu:string,status:string

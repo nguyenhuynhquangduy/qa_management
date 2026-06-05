@@ -1,0 +1,167 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/bootstrap.bundle.min.js")   
+        script(src="/js/sweetalert2@11.js")
+        style.
+            .card { border: none; shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+            .error-feedback { color: #dc3545; font-size: 0.875em; display: none; }
+            body { background-color: #fff; padding: 15px; }
+            .table img { width: 35px; height: 35px; object-fit: cover; border-radius: 50%; }
+            .badge-active { background-color: #28a745; }
+            .badge-inactive { background-color: #6c757d; }
+            .table-container { border-radius: 8px; overflow: hidden; }
+            .search-box { max-width: 300px; }
+            dialog:not([open]) {
+                display: none;
+            }
+            #update-dialog {
+                min-width: 800px;
+                max-width: 1200px;
+                border: none;
+                border-radius: 18px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 6px rgba(216,89,16,0.08);
+                background: linear-gradient(135deg, #fff 80%, #f8fafc 100%);
+                padding: 32px 24px 24px 24px;
+                position: relative;
+                animation: dialogFadeIn 0.35s;
+            }
+            .hidden{ display: none; }
+    body
+        .card
+            .section
+                .row
+                    .d-flex.justify-content-start.align-items-center.mb-3
+                        i.fas.fa-plus.btn#addProduct 
+                        .search-box
+                            form.input-group.input-group-sm(action="/danhmuc/hoatchat", method="GET")
+                                span.input-group-text.bg-white
+                                    i.fas.fa-search.text-muted
+                                input.form-control(type="text" name="search" id="searchInput" placeholder="Tìm kiếm hoạt chất" style="text-transform: none;")
+                        i.fas.fa-sync-alt.btn#reloadProduct
+            .section
+                if errorMessages && errorMessages.length
+                    ul
+                        each message in errorMessages
+                            li(style="color: red;")= message
+                if successMessages && successMessages.length
+                    ul
+                        each message in successMessages
+                            li(style="color: green;")= message            
+        .section 
+                .table-container
+                    table.table.table-hover.align-middle.mb-0
+                        thead.table-light
+                            tr
+                                th.ps-3(style="width: 50px") #
+                                th Tên hoạt chất
+                                th Ghi chú
+                                th Trạng thái
+                                th.text-end.pe-3 Thao tác
+                        tbody#tableBody
+                            if hoatchats && hoatchats.length > 0
+                                each hoatchat, index in hoatchats
+                                    tr
+                                        td.ps-3.text-muted= index + 1
+                                        td= hoatchat.tenHoatChat
+                                        td= hoatchat.ghiChu
+                                        td
+                                            if hoatchat.status == "active"
+                                                span.badge.rounded-pill.bg-success Hoạt động
+                                            else
+                                                span.badge.rounded-pill.bg-info.text-dark Tạm ngưng
+                                        td.text-end.pe-3
+                                            .btn-group.btn-group-sm
+                                                button.btn.btn-outline-secondary.edit-btn(type="button" data-hoatchat = JSON.stringify(hoatchat))
+                                                    i.fas.fa-edit
+                                                button.btn.btn-outline-danger.delete-btn(data-id=hoatchat.id title="Xóa")
+                                                    i.fas.fa-trash
+                            else
+                                tr
+                                    td.text-center.py-4(colspan="6") Không có hoạt chất nào được tìm thấy.
+        .section 
+            dialog#update-dialog
+                .text-end
+                    button.button.btn.btn-danger.btn-sm.close-btn(type="button") ×
+                .col-md-12 
+                    form#update-form.form-horizontal(method='POST', action='/danhmuc/update-hoatchat')
+                        .row
+                            .col-md-6
+                                .form-group
+                                    label(for='tenHoatChat') Tên hoạt chất
+                                    input.form-control(type='text' name='tenHoatChat' id='tenHoatChat')
+                                .form-group
+                                    label(for='ghiChu') Ghi chú
+                                    input.form-control(type='text' name='ghiChu' id='ghiChu')
+                                .form-group
+                                    label(for='status') Trạng thái
+                                    select.form-select(name='status' id='status')
+                                        option(value='active' selected) Hoạt động
+                                        option(value='inactive') Tạm ngưng
+                            .col-md-6
+                                .form-group
+                                    label(for='id') ID hoạt chất
+                                    input#id_hoatchat.form-control(type='hidden' name='id')
+                                    input#id_display.form-control(type='text' disabled)
+                        .d-flex.justify-content-center.mt-3
+                            button.btn.btn-primary(type='submit') Lưu     
+                            button.btn.btn-secondary.closeFormUpdate.ms-2(type='button' data-dismiss='modal') Hủy
+        .section
+                .card.shadow-sm.p-1
+                    #main-content
+                        //- Nội dung bảng của bạn ở đây
+                        iframe#danhmucFrame(src="" width="100%" height="550px" frameborder="0")
+    script.
+        $(document).ready(function() {
+            $('#addProduct').on('click', function(e) {
+                e.preventDefault(); // Chặn thẻ 'a' nhảy trang
+                $('.table-container').addClass('hidden');
+                $('#danhmucFrame').attr('src','/danhmuc/add-hoatchat');
+            })
+            $('#reloadProduct').on('click', function(e) {
+                e.preventDefault(); // Chặn không cho thẻ <a> chuyển hướng lung tung
+                window.location.href = '/danhmuc/hoatchat'; // Đổi thành đường dẫn bạn muốn            })
+            })        
+            $('.edit-btn').on('click', function() {
+                const hoatchat = JSON.parse(this.dataset.hoatchat);
+                $('#tenHoatChat').val(hoatchat.tenHoatChat);
+                $('#ghiChu').val(hoatchat.ghiChu);
+                $('#status').val(hoatchat.status);
+                $('#id_hoatchat, #id_display').val(hoatchat.id);
+                $('#update-dialog')[0].showModal();
+                
+            })            
+            $('.closeFormUpdate, .close-btn').on('click', function() {
+                $('#update-dialog')[0].close();
+            })
+
+            $('.delete-btn').on('click', function() {
+                const hoatchatId = $(this).data('id');
+                //- if (confirm('Bạn có chắc chắn muốn xóa hoạt chất này?')) {
+                //-     // Logic gửi request xóa đến server
+                //-     console.log('Xóa hoạt chất ID:', hoatchatId);
+                //- }
+              Swal.fire({
+                    title: 'Bạn có chắc chắn?',
+                    text: 'Hoạt chất sẽ bị xóa khỏi sản phẩm.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonText: 'Hủy',
+                    confirmButtonText: 'Xóa'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/danhmuc/delete-hoatchat?id=${hoatchatId}`
+                    }
+                });
+        }) 
+        })

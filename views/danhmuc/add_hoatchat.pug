@@ -1,0 +1,48 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        link(rel='stylesheet' href='/css/newStyle.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/bootstrap.bundle.min.js")   
+        style.
+            body { background-color: #f8f9fa; padding: 10px; }
+            .card { border: none; shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+            .error-feedback { color: #dc3545; font-size: 0.875em; display: none; }
+    body
+        .container-fluid 
+            .section 
+                if errorMessages && errorMessages.length
+                    ul
+                        each message in errorMessages
+                            li(style="color: red;")= message
+                if successMessages && successMessages.length
+                    ul
+                        each message in successMessages
+                            li(style="color: green;")= message
+
+            .section
+                .text-center
+                    h5.mb-0.text-primary
+                        i.fas.fa-user-plus.me-2
+                        | THÊM HOẠT CHẤT
+                form(action="/danhmuc/add-hoatchat" method="POST")
+                    .row
+                        .col-md-4
+                            .form-group.mb-3
+                                label(for='tenHoatChat') Tên hoạt chất
+                                input.form-control(type='text' name='tenHoatChat' id='tenHoatChat' required autofocus)
+                            
+                            .form-group.mb-3
+                                label(for='ghiChu') Ghi chú
+                                input.form-control(type='text' name='ghiChu' id='ghiChu')
+                            
+                            .form-group.mt-4
+                                button.form-control.btn.btn-primary(type='submit') Lưu 

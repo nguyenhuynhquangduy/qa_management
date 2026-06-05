@@ -32,3 +32,63 @@
     pointer-events: none;
     /* không chặn click khi đang ẩn */
 }
+
+.card {
+    border: none;
+    shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.error-feedback {
+    color: #dc3545;
+    font-size: 0.875em;
+    display: none;
+}
+
+.body {
+    background-color: #fff;
+    padding: 15px;
+}
+
+.table img {
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.badge-active {
+    background-color: #28a745;
+}
+
+.badge-inactive {
+    background-color: #6c757d;
+}
+
+.table-container {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.search-box {
+    max-width: 300px;
+}
+
+dialog:not([open]) {
+    display: none;
+}
+
+#update-dialog {
+    min-width: 800px;
+    max-width: 1200px;
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18), 0 1.5px 6px rgba(216, 89, 16, 0.08);
+    background: linear-gradient(135deg, #fff 80%, #f8fafc 100%);
+    padding: 32px 24px 24px 24px;
+    position: relative;
+    animation: dialogFadeIn 0.35s;
+}
+
+.hidden {
+    display: none;
+}

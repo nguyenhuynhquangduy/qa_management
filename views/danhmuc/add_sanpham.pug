@@ -7,16 +7,18 @@ html(lang="vi")
         link(rel='stylesheet', href='/css/main.css')
         link(rel='stylesheet' href='/css/style.css')
         link(rel='stylesheet' href='/css/all.min.css')
+        link(rel='stylesheet' href='/css/jquery-ui.css')
         //favicon
         link(rel='shortcut icon' href='/image/ndsoft.ico')
         script(src="/js/jquery.min.js")
+        script(src="/js/jquery-ui.min.js")
         script(src="/js/bootstrap.bundle.min.js")   
         style.
             body { background-color: #f8f9fa; padding: 10px; }
             .card { border: none; shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
             .error-feedback { color: #dc3545; font-size: 0.875em; display: none; }
     body
-        form(action="/addProduct" method="POST")
+        form(action="/danhmuc/add-sanpham" method="POST")
             -console.log('Rendering addProduct.pug with errorMessages:', errorMessages)
             -console.log('Nhìn thý nghiệm hàng này')
             .container-fluid 
@@ -35,12 +37,79 @@ html(lang="vi")
                         h5.mb-0.text-primary
                             i.fas.fa-user-plus.me-2
                             | THÊM SẢN PHẨM
-
                     .row
-                        .col-md-3
-                            .form-group
-                                label(for='tenSanPham') Tên sản phẩm
-                                input.form-control(type='text' name='tenSanPham' id='tenSanPham' required autofocus)
-                            .form-group
-                                label(for='price') Price
-                                input.form-control(type='number' name='price' id='price')
+                            .col-md-3
+                                .form-group
+                                    label(for='tenSanPham') Tên sản phẩm
+                                    input.form-control(type='text' name='tenSanPham' id='tenSanPham' required autofocus)
+                                .form-group
+                                    label(for="dangBaoChe") Dạng bào chế
+                                    input.form-control(type="text" name="dangBaoChe" id="dangBaoChe")
+                                .form-group
+                                    label(for='quyCachDongGoi') Quy cách đóng gói
+                                    input.form-control(type='text' name='quyCachDongGoi' id='quyCachDongGoi')
+                                .form-group
+                                    label(for='soDangKy') Số đăng ký
+                                    input.form-control(type='text' name='soDangKy' id='soDangKy')
+                                .form-group
+                                    label(for='ghiChu') Ghi chú
+                                    input.form-control(type='text' name='ghiChu' id='ghiChu')
+                            .col-md-3
+                                label.form-label Danh sách hoạt chất
+                                #listHoatChat.mb-2
+                                button.btn.btn-outline-secondary.btn-sm#addHoatChat(type="button")
+                                    i.fas.fa-plus.me-1
+                                    | Thêm hoạt chất
+                    .col-md-6
+                        .d-flex.justify-content-center       
+                            button.btn.btn-primary.mt-4(type='submit') Lưu
+    script.
+        function initHoatChatAutocomplete($input) {
+            //Kiểm tra thư viện autocomplete đã được load chưa
+            if (!$.fn.autocomplete) {
+                return;
+            }
+            $input.autocomplete({
+                source: function(request, response) {
+                    (async () => {
+                        try {
+                            const res = await fetch(`/danhmuc/api/ten-hoatchat?term=${encodeURIComponent(request.term)}`);
+                            const data = await res.json();
+                            response(data.map(item => ({ label: item.tenHoatChat, value: item.tenHoatChat })));
+                        } catch (e) {
+                            console.error('Lỗi khi lấy hoạt chất:', e);
+                            response([]);
+                        }
+                    })();
+                },
+                minLength: 1,
+                //- focus: function(event, ui) {
+                //-     event.preventDefault();
+                //-     $(this).val(ui.item.value);
+                //- },
+                select: function(event, ui) {
+                    event.preventDefault();
+                    $(this).val(ui.item.value);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            initHoatChatAutocomplete($('.findHoatChat'));
+
+            $('#addHoatChat').click(function() {
+                $('#listHoatChat').append(`
+                    <div class="input-group mb-2 hoat-chat-item">
+                        <input type="text" class="form-control findHoatChat" name="tenHoatChat[]" placeholder="Tên hoạt chất" required>
+                        <button class="btn btn-outline-danger remove-hoat-chat" type="button">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `);
+                initHoatChatAutocomplete($('#listHoatChat .findHoatChat').last());
+            });
+
+            $(document).on('click', '.remove-hoat-chat', function() {
+                $(this).closest('.hoat-chat-item').remove();
+            });
+        });
