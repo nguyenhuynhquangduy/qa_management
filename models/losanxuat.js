@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       losanxuat.hasMany(models.hoatchatsanxuat, {
         foreignKey: 'losanxuatId',
-        as: 'hoatchat'
+        as: 'hoatchats'
       });
       losanxuat.hasOne(models.thongtinphache, {
         foreignKey: 'losanxuatId',
@@ -37,14 +37,20 @@ module.exports = (sequelize, DataTypes) => {
   }
   losanxuat.init({
     soLo: DataTypes.STRING,
+    thamDinh: DataTypes.BOOLEAN,
     tenSanPham: DataTypes.STRING,
     dangBaoChe: DataTypes.STRING,
     quyCachDongGoi: DataTypes.STRING,
-    coLoVien: DataTypes.INTEGER,
-    coLoVi: DataTypes.INTEGER,
+    coLo: DataTypes.STRING,
     ghiChu: DataTypes.STRING,
-    status: DataTypes.STRING,
-    isDelete: DataTypes.BOOLEAN
+    status: {
+      type: DataTypes.STRING,
+      defaultValue: 'active'
+    },
+    isDelete: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
   }, {
     sequelize,
     modelName: 'losanxuat',

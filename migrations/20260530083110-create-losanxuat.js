@@ -12,6 +12,9 @@ module.exports = {
       soLo: {
         type: Sequelize.STRING
       },
+      thamDinh: {
+        type: Sequelize.BOOLEAN
+      },
       tenSanPham: {
         type: Sequelize.STRING
       },
@@ -21,11 +24,8 @@ module.exports = {
       quyCachDongGoi: {
         type: Sequelize.STRING
       },
-      coLoVien: {
-        type: Sequelize.INTEGER
-      },
-      coLoVi: {
-        type: Sequelize.INTEGER
+      coLo: {
+        type: Sequelize.STRING
       },
       ghiChu: {
         type: Sequelize.STRING

@@ -9,3 +9,6 @@ npx sequelize model:generate --name import_history --attributes fileName:string,
 npx sequelize model:generate --name dm_sanpham --attributes tenSanPham:string,soDangKy:string,dangBaoChe:string,quyCachDongGoi:string,ghiChu:string,status:string
 npx sequelize model:generate --name dm_hoatchat --attributes tenHoatChat:string,ghiChu:string,status:string
 npx sequelize model:generate --name dm_sanpham_hoatchat --attributes tenHoatChat:string,ghiChu:string,status:string
+npm install --save-dev eslint
+npx eslint --init
+npm install eslint-plugin-n --save-dev

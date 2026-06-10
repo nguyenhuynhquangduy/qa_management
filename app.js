@@ -104,12 +104,13 @@ const index = require('./routes/router');
 const rights = require('./routes/rights');
 const user = require('./routes/user');
 const danhmuc = require('./routes/danhmuc');
-
+const sanxuat = require('./routes/sanxuat');
 
 app.use('/', index);
 app.use("/rights", rights);
 app.use("/users", user);
 app.use("/danhmuc", danhmuc);
+app.use("/sanxuat", sanxuat);
 // session-based flash messages (Middleware để quản lý flash message)
 app.use(function (req, res, next) {
     var err = req.session.error,

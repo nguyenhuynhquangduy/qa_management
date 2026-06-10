@@ -1,0 +1,70 @@
+extends ../layout
+block head
+    link(rel="stylesheet" href='/css/jquery-ui.css')
+    link(rel="stylesheet" href='/css/newStyle.css')
+    script(src="/js/bootstrap.bundle.min.js")
+    script(src="/js/bootstrap.min.js")
+    script(src='/js/jquery-3.6.0.min.js')
+    script(src='/js/jquery-ui.min.js')
+    style.
+        html, body {
+            height: 100%;
+            overflow-y: auto;
+        }
+        .well {
+            min-height: 20px;
+            padding: 19px;
+            margin-bottom: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #e3e3e3;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, .05);
+        }
+        .font-auto {
+            font-size: clamp(12px, 1.2vw, 18px);
+             white-space: nowrap; 
+        }
+block content
+    .container-fluid
+        .section.card
+            h1.text-center.text-uppercase(style='color:rgb(216, 89, 16)') VIÊN CỐM BỘT HOÁ DƯỢC 
+        .section 
+            if errorMessages && errorMessages.length
+                ul
+                    each message in errorMessages
+                        li(style="color: red;")= message
+            if successMessages && successMessages.length
+                ul
+                    each message in successMessages
+                        li(style="color: green;")= message  
+        .section.col-md-12 
+            .row 
+                .col-md-1.pe-0
+                    .card.shadow-sm
+                        .btn.btn-block.btn-default.btn-primary#target1.mb-1.font-auto
+                            | Danh sách 
+                        .btn.btn-block.btn-default.btn-primary#target2.font-auto
+                            | Xuất Excel 
+                .col-md-11.ps-0
+                    .section 
+                        .card.shadow-sm.p-1
+                            #main-content
+                                //- Nội dung bảng của bạn ở đây
+                                iframe#danhmucFrame(src="" width="100%" height="800px" frameborder="0")
+        script.
+            $(document).ready(function() {
+                $('#addProduct').on('click', function(e) {
+                    e.preventDefault(); // Chặn thẻ 'a' nhảy trang
+                    $('#danhmucFrame').attr('src','/sanxuat/add-sanpham');
+                })
+                $('#target2').on('click', function(e) {
+                    e.preventDefault(); // Chặn thẻ 'a' nhảy trang
+                    $('#danhmucFrame').attr('src','/danhmuc/hoatchat');
+                })
+                $('#target1').on('click', function(e) {
+                    e.preventDefault(); // Chặn thẻ 'a' nhảy trang
+                    $('#danhmucFrame').attr('src','/sanxuat/sanpham-list');
+                })
+
+            })

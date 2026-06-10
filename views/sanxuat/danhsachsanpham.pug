@@ -1,0 +1,294 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        link(rel='stylesheet' href='/css/jquery-ui.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/jquery-ui.min.js")
+        script(src="/js/bootstrap.bundle.min.js")   
+        script(src="/js/sweetalert2@11.js")
+        style.
+            .card { border: none; shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+            .error-feedback { color: #dc3545; font-size: 0.875em; display: none; }
+            body { background-color: #fff; padding: 15px; }
+            .table img { width: 35px; height: 35px; object-fit: cover; border-radius: 50%; }
+            .badge-active { background-color: #28a745; }
+            .badge-inactive { background-color: #6c757d; }
+            .table-container { border-radius: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .table-container table { min-width: 1200px; }
+            .search-box { max-width: 300px; }
+            dialog:not([open]) {
+                display: none;
+            }
+            #update-dialog {
+                min-width: 800px;
+                max-width: 1200px;
+                border: none;
+                border-radius: 18px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 1.5px 6px rgba(216,89,16,0.08);
+                background: linear-gradient(135deg, #fff 80%, #f8fafc 100%);
+                padding: 32px 24px 24px 24px;
+                position: relative;
+                animation: dialogFadeIn 0.35s;
+            }
+            .hidden{ display: none; }
+            .font-auto {
+                font-size: clamp(12px, 1.2vw, 18px);
+                white-space: nowrap; 
+            }
+    body
+        .card
+            .section
+                .row
+                    .d-flex.justify-content-start.align-items-center.mb-3
+                        i.fas.fa-plus.btn#addProduct 
+                        .search-box
+                            form.input-group.input-group-sm(action="/sanxuat/sanpham-list", method="GET")
+                                span.input-group-text.bg-white
+                                    i.fas.fa-search.text-muted
+                                input.form-control(type="text" name="search" id="searchInput" placeholder="Tìm kiếm sản phẩm" style="text-transform: none;")
+                        i.fas.fa-sync-alt.btn#reloadProduct
+            .section
+                if errorMessages && errorMessages.length
+                    ul
+                        each message in errorMessages
+                            li(style="color: red;")= message
+                if successMessages && successMessages.length
+                    ul
+                        each message in successMessages
+                            li(style="color: green;")= message            
+        .section 
+                .table-container
+                    table.table.table-hover.align-middle.mb-0
+                        thead.table-light
+                            tr
+                                th.ps-3(style="width: 50px") #
+                                th.text-center(style="width: 100px") Số lô
+                                th.text-center TĐ
+                                th.text-center Tên sản phẩm
+                                th.text-center Dạng bào chế
+                                th.text-center Quy cách đóng gói
+                                th.text-center Hoạt chất
+                                th.text-center Cỡ lô
+                                th.text-center(style="max-width: 200px; white-space: normal;") Ghi chú
+                                th.text-center Trạng thái
+                                th.text-end.pe-3 Thao tác
+                        tbody#tableBody
+                            if sanphams && sanphams.length > 0 
+                                each sanpham, index in sanphams
+                                    tr.font-auto
+                                        td.text-center.ps-3.text-muted= index + 1
+                                        td.text-center= sanpham.soLo
+                                        if sanpham.thamDinh == true
+                                            td.text-center(style="color: red;")= "X"
+                                        else
+                                            td.text-center= " "
+                                       
+                                        td.text-center= sanpham.tenSanPham
+                                        td.text-center= sanpham.dangBaoChe
+                                        td.text-center= sanpham.quyCachDongGoi
+                                        td.text-center
+                                            if sanpham.hoatchats && sanpham.hoatchats.length > 0
+                                                each hoatchat in sanpham.hoatchats
+                                                    div.text-white.rounded-pill.bg-success= hoatchat.tenHoatChat
+                                        td.text-center= sanpham.coLo
+                                        td.text-center(style="max-width: 400px; white-space: normal; word-break: break-word;" title=sanpham.ghiChu)= (sanpham.ghiChu && sanpham.ghiChu.length > 50) ? sanpham.ghiChu.substring(0, 20) + '...' : sanpham.ghiChu
+                                        td.text-center
+                                            if sanpham.status == "active"
+                                                span.badge.rounded-pill.bg-primary Hoạt động
+                                            else if sanpham.status == "completed"
+                                                span.badge.rounded-pill.bg-success Hoàn thành
+                                            else
+                                                span.badge.rounded-pill.bg-info.text-dark Tạm ngưng
+                                        td.text-center.text-end.pe-3
+                                            .btn-group.btn-group-sm
+                                                button.btn.btn-outline-secondary.edit-btn(type="button" data-sanpham = JSON.stringify(sanpham))
+                                                    i.fas.fa-edit
+                                                button.btn.btn-outline-secondary.edit-all-btn(type="button" data-sanpham = JSON.stringify(sanpham))
+                                                    i.fas.fa-folder
+                                                button.btn.btn-outline-danger.delete-btn(data-id=sanpham.id title="Xóa")
+                                                    i.fas.fa-trash
+                            else
+                                tr
+                                    td.text-center.py-4(colspan="8") Không có Sản phẩm nào được tìm thấy.
+        .section 
+            dialog#update-dialog
+                .text-end
+                    button.button.btn.btn-danger.btn-sm.close-btn(type="button") ×
+                .col-md-12 
+                    form#update-form.form-horizontal(method='POST', action='')
+                        .row
+                            .col-md-6
+                                .form-group
+                                    label(for='soLo') Số lô
+                                    input.form-control(type='text' name='soLo' id='soLo' required autofocus)
+                                .form-group.m-2
+                                    label(for='thamDinh') Thẩm Định
+                                    input.form-check-input(type='checkbox' name='thamDinh' id='thamDinh')
+                                .form-group
+                                    label(for='tenSanPham') Tên sản phẩm
+                                    input.form-control(type='text' name='tenSanPham' id='tenSanPham' required)
+                                .form-group
+                                    label(for='dangBaoChe') Dạng bào chế
+                                    input.form-control(type='text' name='dangBaoChe' id='dangBaoChe')
+                                .form-group
+                                    label(for='quyCachDongGoi') Quy cách đóng gói
+                                    input.form-control(type='text' name='quyCachDongGoi' id='quyCachDongGoi')
+                                .form-group
+                                        label(for='coLo') Cỡ lô
+                                        input.form-control(type='text' name='coLo' id='coLo')
+                                .form-group
+                                    label(for='ghiChu') Ghi chú
+                                    input.form-control(type='text' name='ghiChu' id='ghiChu')
+                                .form-group
+                                    label(for='status') Trạng thái
+                                    select.form-select(name='status' id='status')
+                                        option(value='active') Hoạt động
+                                        option(value='inactive') Tạm ngưng
+                                        option(value='completed') Hoàn thành
+                            .col-md-6
+                                .form-group
+                                    label Danh sách hoạt chất
+                                    #listHoatChat.mb-2
+                                    button.btn.btn-outline-secondary.btn-sm#addHoatChat(type="button")
+                                        i.fas.fa-plus.me-1
+                                        | Thêm hoạt chất
+                                input#sanpham_id(type='hidden' name='id')
+                        .d-flex.justify-content-center.mt-3
+                            button.btn.btn-primary(type='submit') Lưu     
+                            button.btn.btn-secondary.closeFormUpdate.ms-2(type='button') Hủy
+        .section
+                .card.shadow-sm.p-1
+                    #main-content
+                        //- Nội dung bảng của bạn ở đây
+                        iframe#danhmucFrame(src="" width="100%" height="550px" frameborder="0")
+    script.
+        function initHoatChatAutocomplete($input) {
+            if (!$.fn.autocomplete) {
+                return;
+            }
+            $input.autocomplete({
+                source: function(request, response) {
+                    (async () => {
+                        try {
+                            const res = await fetch(`/danhmuc/api/ten-hoatchat?term=${encodeURIComponent(request.term)}`);
+                            const data = await res.json();
+                            response(data.map(item => ({ label: item.tenHoatChat, value: item.tenHoatChat })));
+                        } catch (e) {
+                            console.error('Lỗi khi lấy hoạt chất:', e);
+                            response([]);
+                        }
+                    })();
+                },
+                minLength: 1,
+                appendTo: "#update-dialog",
+                select: function(event, ui) {
+                    event.preventDefault();
+                    $(this).val(ui.item.value);
+                }
+            });
+        }
+
+        function addHoatChatInput(value = '') {
+            const $item = $(
+                `<div class="input-group mb-2 hoat-chat-item">
+                    <input type="text" class="form-control findHoatChat" name="tenHoatChat[]" placeholder="Tên hoạt chất" required>
+                    <button class="btn btn-outline-danger remove-hoat-chat" type="button">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>`
+            );
+            $item.find('input').val(value || '');
+            $('#listHoatChat').append($item);
+            initHoatChatAutocomplete($item.find('.findHoatChat'));
+        }
+
+        function populateHoatChats(hoatchats) {
+            $('#listHoatChat').empty();
+            if (Array.isArray(hoatchats) && hoatchats.length > 0) {
+                hoatchats.forEach(hc => {
+                    addHoatChatInput(hc.tenHoatChat || hc || '');
+                });
+            } else {
+                addHoatChatInput('');
+            }
+        }
+
+        $(document).ready(function() {
+            initHoatChatAutocomplete($('.findHoatChat'));
+
+            $('#addHoatChat').on('click', function() {
+                addHoatChatInput();
+            });
+
+            $(document).on('click', '.remove-hoat-chat', function() {
+                $(this).closest('.hoat-chat-item').remove();
+                if ($('#listHoatChat .hoat-chat-item').length === 0) {
+                    addHoatChatInput();
+                }
+            });
+
+            $('#addProduct').on('click', function(e) {
+                e.preventDefault(); // Chặn thẻ 'a' nhảy trang
+                $('.table-container').addClass('hidden');
+                $('#danhmucFrame').attr('src','/sanxuat/add-sanpham');
+            })
+
+            $('#reloadProduct').on('click', function(e) {
+                e.preventDefault(); // Chặn không cho thẻ <a> chuyển hướng lung tung
+                window.location.href = '/danhmuc/sanpham';
+            })
+            $('#tableBody').on('click', '.edit-all-btn', function() {
+                const sanpham = JSON.parse(this.dataset.sanpham || '{}');
+                const id = sanpham.id || '';
+                console.log("ID:", id);
+                if(id) {
+                    window.location.href = `/sanxuat/edit-sanpham?id=${id}`;
+                }
+            })
+            $('#tableBody').on('click', '.edit-btn', function() {
+                const sanpham = JSON.parse(this.dataset.sanpham || '{}');
+                $('#update-form').attr('action', `/sanxuat/update-sanpham?id=${sanpham.id || ''}`);
+                $('#update-form').attr('method', 'POST'); // Bổ sung để dễ theo dõi method
+                $('#soLo').val(sanpham.soLo || '');
+                $('#thamDinh').prop('checked', sanpham.thamDinh || '');
+                $('#coLo').val(sanpham.coLo || '');
+                $('#tenSanPham').val(sanpham.tenSanPham || '');
+                $('#dangBaoChe').val(sanpham.dangBaoChe || '');
+                $('#quyCachDongGoi').val(sanpham.quyCachDongGoi || '');
+                //- $('#soDangKy').val(sanpham.soDangKy || '');
+                $('#ghiChu').val(sanpham.ghiChu || '');
+                $('#status').val(sanpham.status || 'active');
+                $('#sanpham_id').val(sanpham.id || '');
+                populateHoatChats(sanpham.hoatchats || []);
+                $('#update-dialog')[0].showModal();
+            });
+
+            $('.closeFormUpdate, .close-btn').on('click', function() {
+                $('#update-dialog')[0].close();
+            });
+
+            $('.delete-btn').on('click', function() {
+                const sanphamId = $(this).data('id');
+                Swal.fire({
+                    title: 'Bạn có chắc chắn?',
+                    text: 'Hoạt chất sẽ bị xóa khỏi sản phẩm.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonText: 'Hủy',
+                    confirmButtonText: 'Xóa'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = `/sanxuat/delete-sanpham?id=${sanphamId}`
+                    }
+                });
+            });
+        })

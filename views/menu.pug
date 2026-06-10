@@ -1,6 +1,6 @@
 extends ./layout
 block head
-    link(rel='stylesheet', href='./css/index.css')
+    link(rel='stylesheet', href='/css/index.css')
     link(rel="stylesheet" href='/css/jquery-ui.css')
     script(src="/js/bootstrap.bundle.min.js")
     script(src="/js/bootstrap.min.js")
@@ -9,7 +9,7 @@ block head
     style.
         html, body {
             height: 100%;
-            overflow-y: auto;
+            overflow: auto;
         }
    
         .well {
@@ -107,7 +107,7 @@ block content
     script.
         $(document).ready(function() {
             $('#target1').click(function() {
-                window.location.href = '/mails/menu-mail'
+                window.location.href = '/sanxuat/menu-viencom'
             })
             $('#target4').click(function() {
                 window.location.href = '/danhmuc/danhmuc-menu'
@@ -128,4 +128,3 @@ block content
                 window.location.href = '/services/complete-bulk'
             })
         })
-

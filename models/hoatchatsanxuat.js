@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
+    tenHoatChat: DataTypes.STRING,
     BTP_dinhLuong: DataTypes.DECIMAL(5, 2),
     dapVien_dinhLuong: DataTypes.DECIMAL(5, 2),
     dapVien_hoatan1: DataTypes.STRING,

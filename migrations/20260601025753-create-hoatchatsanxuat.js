@@ -19,6 +19,9 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
+      tenHoatChat: {
+        type: Sequelize.STRING
+      },
       BTP_dinhLuong: {
         type: Sequelize.DECIMAL(5, 2)
       },

@@ -1,0 +1,419 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/newStyle.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        link(rel='stylesheet' href='/css/jquery-ui.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/jquery-ui.min.js")
+        script(src="/js/bootstrap.bundle.min.js")   
+        style.
+            body { background-color: #f8f9fa; padding: 10px;font-family: 'Arial', Times, serif; }
+            .card { border: none; shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+            .error-feedback { color: #dc3545; font-size: 0.875em; display: none; }
+            .hidden{ display: none; }
+            .font-auto {
+                font-size: clamp(12px, 1.2vw, 18px);
+                white-space: nowrap; 
+            }
+            .font-color{
+                color: var(--accent); /* Phải có var() và -- */
+            }
+    body
+        .section 
+            if errorMessages && errorMessages.length
+                ul
+                    each message in errorMessages
+                        li(style="color: red;")= message
+            if successMessages && successMessages.length
+                ul
+                    each message in successMessages
+                        li(style="color: green;")= message
+
+        .div                
+            //- form(action="/sanxuat/update-sanpham" method="POST")
+            input(type="hidden" name="id" value=sanpham.id)
+            .container-fluid 
+                .section
+                    .text-center
+                        h5.mb-0.text-primary
+                            i.fas.fa-edit.me-2
+                            | CẬP NHẬT THÔNG TIN SẢN PHẨM
+        .btn.btn-outline-primary.mt-4#btnThongTinChung(type="button") Thông tin chung     
+        .section#thongTinChung.hidden.card        
+                .row.border
+                    .col-md-3
+                        .form-group
+                            label.font-color(for='soLot') Số lô
+                            input.form-control(type='text' name='soLo' id='soLo' value=sanpham.soLo readonly)
+                        .form-group
+                            .form-check.mb-2
+                                label.font-color(for='TD') Thẩm Định
+                                input.form-check-input(type='checkbox' name='thamDinh' id='TD' checked=sanpham.thamDinh readonly)
+
+                        .form-group
+                            label.font-color(for='tenSanPham') Tên sản phẩm
+                            input.form-control(type='text' name='tenSanPham' id='tenSanPham' value=sanpham.tenSanPham readonly )
+                            
+                        .form-group
+                            label.font-color(for="dangBaoChe") Dạng bào chế
+                            input.form-control(type="text" name="dangBaoChe" id="dangBaoChe" value=sanpham.dangBaoChe readonly)
+                    .col-md-3        
+                        .form-group
+                            label.font-color(for='quyCachDongGoi') Quy cách đóng gói
+                            input.form-control(type='text' name='quyCachDongGoi' id='quyCachDongGoi' value=sanpham.quyCachDongGoi readonly)
+                        .form-group
+                            label.font-color(for='coLo') Cỡ lô 
+                            input.form-control(type='text' name='coLo' id='coLo' value=sanpham.coLo readonly)
+                        .form-group
+                            label.font-color(for='ghiChu') Ghi chú
+                            input.form-control(type='text' name='ghiChu' id='ghiChu' value=sanpham.ghiChu readonly)
+                        .form-group
+                            label.font-color(for='status') Trạng thái
+                            select.form-select(name='status' id='status' readonly   )
+                                option(value='active' selected=sanpham.status === 'active') Hoạt động
+                                option(value='inactive' selected=sanpham.status === 'inactive') Tạm ngưng
+                                option(value='completed' selected=sanpham.status === 'completed') Hoàn thành
+                    .col-md-3
+                        label.font-color.form-label Danh sách hoạt chất
+                        #listHoatChat.mb-2
+                        button.btn.btn-outline-secondary.btn-sm#addHoatChat(type="button")
+                            i.fas.fa-plus.me-1
+                            | Thêm hoạt chất
+                    //- .col-md-6
+                    //-     .d-flex.justify-content-center       
+                    //-         button.btn.btn-primary.mt-4(type='submit') Lưu
+        .btn.btn-outline-primary.mt-4#btnThongTinPhaChe(type="button" data-id=sanpham.id) Thông tin pha chế - đóng gói                
+        .section#thongTinPhaChe.hidden.card        
+            .row.border#formThongTinPhaChe
+                input(type="hidden" name="losanxuatId" value=sanpham.id)
+                .col-md-3
+                    .form-group
+                        label.font-color(for='ngayPhache') Ngày pha chế
+                        input.form-control(type='date' name='ngayPhache' id='ngayPhache')
+                    .form-group
+                        label.font-color(for='soLot') Hệ số bù
+                        input.form-control(type='text' name='heSoBu' id='heSoBu' placeholder='5% (chưa nhập hệ số bù)')
+                    .form-group
+                        label.font-color Độ ẩm cốm màu 1    
+                        .row 
+                            .col-md-4 
+                                label(for="say1") Sấy 1
+                                input.form-control(type='text' name='say1' id='say1')
+                            .col-md-4
+                                label(for="THT1") THT 1
+                                input.form-control(type='text' name='THT1' id='THT1')
+                            .col-md-4
+                                label(for="Vien1") Viên 1
+                                input.form-control(type='text' name='vien1' id='Vien1')
+                        label.font-color Độ ẩm cốm màu 2
+                        .row 
+                            .col-md-4 
+                                label(for="say2") Sấy 2
+                                input.form-control(type='text' name='say2' id='say2')
+                            .col-md-4
+                                label(for="THT2") THT 2
+                                input.form-control(type='text' name='THT2' id='THT2')
+                            .col-md-4
+                                label(for="Vien2") Viên 2
+                                input.form-control(type='text' name='vien2' id='Vien2')
+                .col-md-3                
+                    .form-group
+                        label.font-color(for='doCung') Độ cứng
+                        input.form-control(type='text' name='doCung' id='doCung')
+                    .form-group
+                        label.font-color(for='doRa') Độ rã
+                        input.form-control(type='text' name='doRa' id='doRa')
+                    .form-group
+                        label.font-color(for='doMayMon') Độ mày mòn
+                        input.form-control(type='text' name='doMayMon' id='doMayMon')
+                    .form-group
+                        label.font-color(for='ngayDongGoiCap1') Ngày đóng gói cấp 1
+                        input.form-control(type='date' name='ngayDongGoiCap1' id='ngayDongGoiCap1')
+                    .form-group
+                        label.font-color(for='khoiLuongCom') Khối Lượng Cốm
+                        input.form-control(type='text' name='khoiLuongCom' id='khoiLuongCom')
+                    .form-group
+                        label.font-color(for='khoiLuongGiaoNop') Khối Lượng Giao Nộp
+                        input.form-control(type='text' name='khoiLuongGiaoNop' id='khoiLuongGiaoNop')
+            .btn.btn-primary.mt-4#saveThongTinPhaChe(type='submit') Lưu
+        .btn.btn-outline-primary.mt-4#btnBTPCom(type="button" data-id=sanpham.id) BTP - Cốm             
+        .section#BTPCom.hidden.card        
+            form.row.border#formBTPCom(medthod="POST")
+                input(type="hidden" name="losanxuatId" value=sanpham.id)
+                .col-md-4
+                    .form-group
+                        label.font-color(for='khoiLuongYeuCauDap') Khối Lượng Viên (mg) (Yêu cầu dập )
+                        input.form-control(type='text' name='KLV_yeucaudap' id='khoiLuongYeuCauDap')
+                    .form-group
+                        label.font-color(for='khoiLuongQC') Khối Lượng Viên (mg) (QC ra phiếu)
+                        input.form-control(type='text' name='KLV_QC' id='khoiLuongQC')
+                    .form-group.border.mt-4
+                        label.font-color Định lượng 
+                        br
+                        .div.ms-4
+                            each hoatchat in hoatchats
+                                label(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                                input.form-control(type='number' name=`BTP_dinhLuong[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` min="0" max="1000" step="0.01" placeholder='ex: 1.01')
+                .col-md-4 
+                    .form-group   
+                        label.font-color(for='tapDon') Tạp đơn
+                        input.form-control(type='text' name='tapDon' id='tapDon')
+                    .form-group
+                        label.font-color(for='tapKhac') Tạp khác
+                        input.form-control(type='text' name='tapKhac' id='tapKhac')
+                    .form-group
+                        label.font-color(for='tongTap') Tổng tạp
+                        input.form-control(type='text' name='tongTap' id='tongTap')
+            .btn.btn-primary.mt-4#saveBTPCom(type='submit') Lưu            
+
+        .section 
+            #toast                        
+
+    script.
+        function initHoatChatAutocomplete($input) {
+            //Kiểm tra thư viện autocomplete đã được load chưa
+            if (!$.fn.autocomplete) {
+                return;
+            }
+            $input.autocomplete({
+                source: function(request, response) {
+                    (async () => {
+                        try {
+                            const res = await fetch(`/danhmuc/api/ten-hoatchat?term=${encodeURIComponent(request.term)}`);
+                            const data = await res.json();
+                            response(data.map(item => ({ label: item.tenHoatChat, value: item.tenHoatChat })));
+                        } catch (e) {
+                            console.error('Lỗi khi lấy hoạt chất:', e);
+                            response([]);
+                        }
+                    })();
+                },
+                minLength: 1,
+                //- focus: function(event, ui) {
+                //-     event.preventDefault();
+                //-     $(this).val(ui.item.value);
+                //- },
+                select: function(event, ui) {
+                    event.preventDefault();
+                    $(this).val(ui.item.value);
+                }
+            });
+        }
+        //- $('#btnBTPCom').on('click', function() {
+        //-     $('#BTPCom').slideToggle();
+        //- })
+        $('#saveBTPCom').on('click', async function(e) {
+            e.preventDefault();
+            
+            // 1. Thu thập dữ liệu từ các input trong container #formBTPCom
+            const data = {};
+            // Tạo sẵn object trống cho định lượng để lát nữa nhét ID vào
+            data['BTP_dinhLuong'] = {};
+            $('#formBTPCom input').each(function() {
+                const name = $(this).attr('name');
+                if (!name) return;
+                //- if (name) {
+                //-     // Xử lý lấy giá trị, nếu là checkbox thì lấy true/false, còn lại lấy value
+                //-     data[name] = $(this).attr('type') === 'checkbox' ? $(this).is(':checked') : $(this).val();
+                //- }
+                // Lấy giá trị của input
+                const val = $(this).attr('type') === 'checkbox' ? $(this).is(':checked') : $(this).val();
+                // KIỂM TRA: Nếu name có dạng BTP_dinhLuong[ID]
+                const match = name.match(/^BTP_dinhLuong\[(\d+)\]$/);
+                if (match) {
+                    const id = match[1]; // Lấy ra ID (ví dụ: 6 hoặc 7)
+                    data['BTP_dinhLuong'][id] = val; // Nhét vào object lồng
+                } else {
+                    // Các trường bình thường khác (losanxuatId, KLV_yeucaudap,...)
+                    data[name] = val;
+                }
+            });
+            // Lúc này, object `data` truyền đi sẽ tự động có cấu trúc:
+            // { losanxuatId: '5', BTP_dinhLuong: { "6": "98.6", "7": "107" }, ... }
+            try {
+                // 2. Thực hiện fetch gửi dữ liệu về server
+                const response = await fetch('/sanxuat/api/edit-btpcom', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    toast(result.message || 'Lưu thông tin thành công!', '#28a745');
+                } else {
+                    toast(result.message || 'Có lỗi xảy ra khi lưu dữ liệu!', '#dc3545');
+                }
+            } catch (error) {
+                console.error('Lỗi khi gửi dữ liệu:', error);
+            }
+        })
+        $('#saveThongTinPhaChe').on('click', async function(e) {
+            e.preventDefault();
+            
+            // 1. Thu thập dữ liệu từ các input trong container #formThongTinPhaChe
+            const data = {};
+            $('#formThongTinPhaChe input').each(function() {
+                const name = $(this).attr('name');
+                if (name) {
+                    // Xử lý lấy giá trị, nếu là checkbox thì lấy true/false, còn lại lấy value
+                    data[name] = $(this).attr('type') === 'checkbox' ? $(this).is(':checked') : $(this).val();
+                }
+            });
+
+            try {
+                // 2. Thực hiện fetch gửi dữ liệu về server
+                const response = await fetch('/sanxuat/api/edit-thongtinphache', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    toast(result.message || 'Lưu thông tin thành công!', '#28a745');
+                } else {
+                    toast(result.message || 'Có lỗi xảy ra khi lưu dữ liệu!', '#dc3545');
+                }
+            } catch (error) {
+                console.error('Lỗi fetch:', error);
+                toast('Không thể kết nối đến máy chủ!', '#dc3545');
+            }
+        })
+
+        function addHoatChatInput(value = '') {
+            const $item = $(
+                `<div class="input-group mb-2 hoat-chat-item">
+                    <input type="text" class="form-control findHoatChat" name="tenHoatChat[]" placeholder="Tên hoạt chất" required>
+                    <button class="btn btn-outline-danger remove-hoat-chat" type="button">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>`
+            );
+            $item.find('input').val(value || '');
+            $('#listHoatChat').append($item);
+            initHoatChatAutocomplete($item.find('.findHoatChat'));
+        }
+
+        function populateHoatChats(hoatchats) {
+            $('#listHoatChat').empty();
+            if (Array.isArray(hoatchats) && hoatchats.length > 0) {
+                hoatchats.forEach(hc => {
+                    addHoatChatInput(hc.tenHoatChat || hc || '');
+                });
+            } else {
+                addHoatChatInput('');
+            }
+        }
+
+        $(document).ready(function() {
+            $('#btnThongTinChung').on('click', function() {
+                $('#thongTinChung').slideToggle();
+           
+            });
+            $('#btnThongTinPhaChe').on('click', async function() {
+                const id = $(this).data('id');
+                
+                // Nếu section đang ẩn và chuẩn bị mở ra, hãy load dữ liệu cũ (nếu có)
+                if ($('#thongTinPhaChe').is(':hidden')) {
+                    try {
+                        const res = await fetch(`/sanxuat/api/get-thongtinphache?id=${id}`);
+                        const oldData = await res.json();
+                        
+                        if (oldData) {
+                            // Tự động đổ dữ liệu vào các ô input tương ứng theo thuộc tính name
+                            Object.keys(oldData).forEach(key => {
+                                const $input = $(`#formThongTinPhaChe [name="${key}"]`);
+                                if ($input.length) {
+                                    if ($input.attr('type') === 'date' && oldData[key]) {
+                                        // Format lại ngày yyyy-MM-dd để input date hiểu được
+                                        $input.val(oldData[key].split('T')[0]);
+                                    } else {
+                                        $input.val(oldData[key]);
+                                    }
+                                }
+                            });
+                        }
+                    } catch (e) {
+                        console.error("Không thể tải thông tin pha chế cũ:", e);
+                    }
+                }
+
+                $('#thongTinPhaChe').slideToggle();
+            });
+
+            $('#btnBTPCom').on('click', async function() {
+                const id = $(this).data('id');
+                
+                // Nếu section đang ẩn và chuẩn bị mở ra, hãy load dữ liệu cũ (nếu có)
+                if ($('#BTPCom').is(':hidden')) {
+                    try {
+                        const res = await fetch(`/sanxuat/api/get-btpcom?id=${id}`);
+                        const btpcomData = await res.json();
+                        
+                        if (btpcomData) {
+                            // Tự động đổ dữ liệu vào các ô input tương ứng theo thuộc tính name
+                            Object.keys(btpcomData).forEach(key => {
+                                if (key === 'hoatchats') return; // Bỏ qua mảng hoạt chất để xử lý riêng bên dưới
+                                const $input = $(`#formBTPCom [name="${key}"]`);
+                                if ($input.length) {
+                                    $input.val(btpcomData[key]);
+                                }
+                            });
+
+                            // Populate hoatchats BTP_dinhLuong
+                            if (btpcomData.hoatchats && Array.isArray(btpcomData.hoatchats)) {
+                                btpcomData.hoatchats.forEach(hoatchat => {
+                                    const $hoatChatInput = $(`#formBTPCom input[name="BTP_dinhLuong[${hoatchat.id}]"]`);
+                                    if ($hoatChatInput.length) {
+                                        $hoatChatInput.val(hoatchat.BTP_dinhLuong);
+                                    }
+                                });
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Không thể tải thông tin BTP - Cốm cũ:", e);
+                    }
+                }
+                $('#BTPCom').slideToggle();
+            });
+            // Nhận dữ liệu hoạt chất từ controller truyền sang
+            const currentHoatChats = !{JSON.stringify(hoatchats || [])};
+            populateHoatChats(currentHoatChats);
+            $('#addHoatChat').on('click', function() {
+                addHoatChatInput();
+            });
+
+            $(document).on('click', '.remove-hoat-chat', function() {
+                $(this).closest('.hoat-chat-item').remove();
+                if ($('#listHoatChat .hoat-chat-item').length === 0) {
+                    addHoatChatInput();
+                }
+            });
+        });
+        function toast(msg, bg) {
+                const t = document.getElementById('toast');
+                if (!t) return;
+                t.textContent = msg;
+                t.style.background = bg || '#333';
+                t.style.opacity = '1';
+                t.style.transform = 'translateX(-50%) translateY(0)';
+                setTimeout(() => {
+                    t.style.opacity = '0';
+                    t.style.transform = 'translateX(-50%) translateY(80px)';
+                }, 3000);
+            }

@@ -389,7 +389,28 @@ const deleteSanPham = async (req, res, next) => {
         next(e);
     }
 }
+
+const getSanPhamAPI = async (req, res, next) => {
+    try {
+        const term = req.query.term || '';
+        const sanphams = await db.dm_sanpham.findAll({
+            where: {
+                tenSanPham: { [Op.like]: `%${term}%` },
+                status: "active",
+            },
+            include: {
+                model: db.dm_sanpham_hoatchat,
+                as: 'hoatchats'
+            }
+        });
+        return res.json(sanphams);
+    } catch (e) {
+        console.log(e);
+        next(e);
+    }
+}
 module.exports = {
+    getSanPhamAPI,
     deleteSanPham,
     postUpdateSanPham,
     getTenHoatChatAPI,

@@ -11,6 +11,7 @@ router.get("/add-sanpham", isLoggedIn, danhmuc.getAddSanPham);
 router.post("/add-sanpham", isLoggedIn, logs, danhmuc.postAddSanPham);
 router.post("/update-sanpham", isLoggedIn, danhmuc.postUpdateSanPham);
 router.get("/delete-sanpham", isLoggedIn, danhmuc.deleteSanPham);
+router.get("/api/sanphams", isLoggedIn, danhmuc.getSanPhamAPI);
 
 router.get("/hoatchat", isLoggedIn, danhmuc.getHoatChat);
 router.get("/add-hoatchat", isLoggedIn, danhmuc.addHoatChat);

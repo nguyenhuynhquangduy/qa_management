@@ -41,7 +41,7 @@ html(lang="vi")
                             .col-md-3
                                 .form-group
                                     label(for='tenSanPham') Tên sản phẩm
-                                    input.form-control(type='text' name='tenSanPham' id='tenSanPham' required autofocus)
+                                    input.form-control(type='text' name='tenSanPham' id='tenSanPham' required)
                                 .form-group
                                     label(for="dangBaoChe") Dạng bào chế
                                     input.form-control(type="text" name="dangBaoChe" id="dangBaoChe")
@@ -96,6 +96,9 @@ html(lang="vi")
 
         $(document).ready(function() {
             initHoatChatAutocomplete($('.findHoatChat'));
+            if (!document.activeElement || document.activeElement === document.body || document.activeElement === document.documentElement) {
+                $('#tenSanPham').focus();
+            }
 
             $('#addHoatChat').click(function() {
                 $('#listHoatChat').append(`
