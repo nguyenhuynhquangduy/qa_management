@@ -1,8 +1,275 @@
 .btn.btn-outline-primary.mt-4#btnThanhPham(type="button" data-id=sanpham.id) Thành phẩm
-    .section#thanhPham.hidden.card        
-        form.row.border#formThanhPham(method="POST")
-            input(type="hidden" name="losanxuatId" value=sanpham.id)
-            .col-md-4
-                .form-group
-                    label.font-color(for='khoiLuongYeuCauDap') Khối Lượng Viên (mg) (Yêu cầu )
-                    input.form-control(type='text' name='KLV_yeucau' id='khoiLuongYeuCauDap')
+.section#thanhPham.hidden.card        
+    form.row.border#formThanhPham(method="POST")
+        input(type="hidden" name="losanxuatId" value=sanpham.id)
+        .col-md-2
+            .form-group
+                label.font-color(for='ngayKiemTra') Ngày kiểm tra
+                input.form-control(type='date' name='ngayKiem' id='ngayKiemTra')
+            .form-group
+                label.font-color(for='loCF') Lô CF 
+                input.form-control(type='text' name='loCF' id='loCF')
+            .form-group
+                label.font-color(for='KLV') Khối Lượng Viên (mg)
+                input.form-control(type='text' name='KLV' id='KLV')
+            .form-group
+                label.font-color Định lượng 
+                br
+                .div.ms-4
+                    each hoatchat in hoatchats
+                        label(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        input.form-control(type='number' name=`thanhPham_dinhLuong[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` min="0" max="1000" step="0.01" placeholder='ex: 1.01')
+            .form-group
+                label.font-color(for='doRa') Độ rã
+                br
+                .div.ms-4
+                    each hoatchat in hoatchats
+                        label(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        input.form-control(type='text' name=`thanhPham_doRa[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}`)
+                
+        .col-md-4
+            label.font-color Hoà tan (S1)
+            br
+            .div.ms-4
+                each hoatchat in hoatchats
+                    .form-group.border.mt-1.p-1
+                        label.font-color.mb-3(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        .row.font-mini.p-0.text-center
+                            .col-md-2
+                                label Viên 1
+                                input.form-control(type='text' name=`thanhPham_hoatan1_vien1[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 2
+                                input.form-control(type='text' name=`thanhPham_hoatan1_vien2[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 3
+                                input.form-control(type='text' name=`thanhPham_hoatan1_vien3[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 4
+                                input.form-control(type='text' name=`thanhPham_hoatan1_vien4[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 5
+                                input.form-control(type='text' name=`thanhPham_hoatan1_vien5[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 6
+                                input.form-control(type='text' name=`thanhPham_hoatan1_vien6[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )  
+            label.font-color Hoà tan (S2)
+            br
+            .div.ms-4
+                each hoatchat in hoatchats
+                    .form-group.border.mt-1.p-1
+                        label.font-color.mb-3(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        .row.font-mini.p-0.text-center
+                            .col-md-2
+                                label Viên 1
+                                input.form-control(type='number' name=`thanhPham_hoatan2_vien1[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 2
+                                input.form-control(type='number' name=`thanhPham_hoatan2_vien2[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 3
+                                input.form-control(type='number' name=`thanhPham_hoatan2_vien3[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 4
+                                input.form-control(type='number' name=`thanhPham_hoatan2_vien4[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2 
+                                label Viên 5
+                                input.form-control(type='number' name=`thanhPham_hoatan2_vien5[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 6
+                                input.form-control(type='number' name=`thanhPham_hoatan2_vien6[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+           
+        .col-md-2
+            .form-group
+                label.font-color(for='tapDon') Tạp đơn
+                input.form-control(type='text' name='tapDon' id='tapDon')
+            .form-group
+                label.font-color(for='tapKhac') Tạp khác
+                input.form-control(type='text' name='tapKhac' id='tapKhac')
+            .form-group
+                label.font-color(for='tap4Amino') Tạp 4 - Amino
+                input.form-control(type='text' name='tap4Amino' id='tap4Amino')
+            .form-group
+                label.font-color(for='tongTap') Tổng tạp
+                input.form-control(type='text' name='tongTap' id='tongTap')
+            .form-group.border.mt-2.p-1(style="border-radius: 10px;") 
+                label.font-color Độ mịn
+                br
+                .div.ms-4.row
+                    .col
+                        label(for='doMinLon') Lớn
+                        input.form-control(type='text' name='doMinLon' id='doMinLon')
+                    .col
+                        label(for='doMinNho') Nhỏ
+                        input.form-control(type='text' name='doMinNho' id='doMinNho')   
+            .form-group
+                label.font-color(for='doAm') Độ ẩm
+                br
+                .div.ms-4
+                    each hoatchat in hoatchats
+                        label(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        input.form-control(type='text' name=`thanhPham_doAm[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}`) 
+        .col-md-4 
+            .form-group.border   
+                label.font-color DDDVL
+                .div.ms-4
+                each hoatchat in hoatchats
+                    .form-group.mt-1.p-1
+                        label(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        .row.font-mini.p-0.text-center
+                            .col 
+                                label  TB %
+                                input.form-control(type='text' name=`DDDVL_TB[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col
+                                label  (AV %)
+                                input.form-control(type='text' name=`DDDVL_AV[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col 
+                                label  Viên 1
+                                input.form-control(type='text' name=`DDDVL_Vien1[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col
+                                label  Viên 2
+                                input.form-control(type='text' name=`DDDVL_Vien2[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col
+                                label  Viên 3
+                                input.form-control(type='text' name=`DDDVL_Vien3[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col
+                                label  Viên 4
+                                input.form-control(type='text' name=`DDDVL_Vien4[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                        .row.font-mini.p-0.text-center
+                            .col 
+                                label  Viên 5
+                                input.form-control(type='text' name=`DDDVL_Vien5[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col
+                                label  Viên 6
+                                input.form-control(type='text' name=`DDDVL_Vien6[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col 
+                                label  Viên 7
+                                input.form-control(type='text' name=`DDDVL_Vien7[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col
+                                label  Viên 8
+                                input.form-control(type='text' name=`DDDVL_Vien8[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col
+                                label  Viên 9
+                                input.form-control(type='text' name=`DDDVL_Vien9[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col
+                                label  Viên 10
+                                input.form-control(type='text' name=`DDDVL_Vien10[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+            .form-group
+                label.font-color(for='soSaiLech') Số sai lệch    
+                input.form-control(type='text' name='soSaiLech' id='soSaiLech')
+            .form-group
+                label.font-color(for='soKiemSoatThayDoi') Số kiểm soát thay đổi
+                input.form-control(type='text' name='soKiemSoatThayDoi' id='soKiemSoatThayDoi')
+            .form-group
+                label.font-color(for='ghiChu') Ghi chú
+                input.form-control(type='text' name='ghiChu' id='ghiChu')
+    
+    .btn.btn-primary.mt-4#saveThanhPham(type='submit',style="width: 200px") Lưu
+    script.
+        let isLoadingThanhPham = false;
+        $('#btnThanhPham').on('click', async function() {
+            if (isLoadingThanhPham) return;
+            isLoadingThanhPham = true;
+            
+            try {
+                if ($('#thanhPham').is(':hidden')) {
+                    const id = $(this).data('id');
+                    const response = await fetch(`/sanxuat/api/get-thanhpham?id=${id}`);
+                    const data = await response.json();
+                    
+                    if (data) {
+                        // Đổ dữ liệu các trường cơ bản
+                        Object.keys(data).forEach(key => {
+                            if (key === 'hoatchats') return;
+                            const $input = $(`#formThanhPham [name="${key}"]`);
+                            if ($input.length) {
+                                if ($input.attr('type') === 'date' && data[key]) {
+                                    $input.val(data[key].split('T')[0]);
+                                } else {
+                                    $input.val(data[key]);
+                                }
+                            }
+                        });
+                        
+                        // Đổ dữ liệu mảng hoạt chất (Hòa tan, Định lượng, DDDVL...)
+                        if (data.hoatchats && Array.isArray(data.hoatchats)) {
+                            data.hoatchats.forEach(hoatchat => {
+                                // Duyệt qua mọi thuộc tính trong object hoạt chất từ API
+                                Object.keys(hoatchat).forEach(attrKey => {
+                                    // Tìm input có name dạng: tenTruong[id]
+                                    const $input = $(`#formThanhPham [name="${attrKey}[${hoatchat.id}]"]`);
+                                    if ($input.length) {
+                                        $input.val(hoatchat[attrKey]);
+                                    }
+                                });
+                            });
+                        }
+                    }
+                }
+                $('#thanhPham').slideToggle();
+            } catch (e) {
+                console.error("Lỗi khi tải dữ liệu thành phẩm:", e);
+            } finally {
+                setTimeout(() => { isLoadingThanhPham = false; }, 500);
+            }
+        });
+
+        let savingThanhPham = false;
+        $('#saveThanhPham').on('click', async function(e) {
+            e.preventDefault();
+            if (savingThanhPham) return;
+            savingThanhPham = true;
+            
+            try {
+                const data = {};
+                // Thu thập dữ liệu từ form
+                $('#formThanhPham').find('input, select, textarea').each(function() {
+                    const $el = $(this);
+                    const name = $el.attr('name');
+                    if (!name) return;
+                    
+                    let val = $el.val();
+                    if ($el.attr('type') === 'checkbox') val = $el.is(':checked');
+                    
+                    // Regex kiểm tra xem field có phải dạng mảng hoạt chất: tenTruong[id]
+                    const match = name.match(/^(.+)\[(\d+)\]$/);
+                    if (match) {
+                        const fieldName = match[1]; // ví dụ: thanhPham_hoatan1_vien1
+                        const hoatChatId = match[2]; // ví dụ: 6
+                        
+                        if (!data[fieldName]) data[fieldName] = {};
+                        data[fieldName][hoatChatId] = val;
+                    } else {
+                        data[name] = val;
+                    }
+                });
+                
+                const response = await fetch('/sanxuat/api/edit-thanhpham', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    if (typeof toast === 'function') {
+                        toast(result.message || 'Lưu thông tin thành phẩm thành công!', '#28a745');
+                    } else {
+                        alert('Lưu thành công!');
+                    }
+                } else {
+                    throw new Error(result.message || 'Có lỗi xảy ra');
+                }
+                
+            } catch (error) {
+                console.error('Lỗi khi lưu dữ liệu thành phẩm:', error);
+                if (typeof toast === 'function') {
+                    toast(error.message || 'Không thể kết nối đến máy chủ!', '#dc3545');
+                }
+            } finally {
+                setTimeout(() => { savingThanhPham = false; }, 1500);
+            }
+        });

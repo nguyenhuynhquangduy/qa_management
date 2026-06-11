@@ -21,4 +21,7 @@ router.post('/api/edit-btpcom', isLoggedIn, logs, sanxuat.postAPI_BTPcom);
 router.get('/api/get-dapvien', isLoggedIn, sanxuat.getAPIdapVien);
 router.post('/api/edit-dapvien', isLoggedIn, logs, sanxuat.postAPIdapVien);
 
+router.get('/api/get-thanhpham', isLoggedIn, sanxuat.getAPIthanhPham);
+router.post('/api/edit-thanhpham', isLoggedIn, logs, sanxuat.postAPIthanhPham);
+
 module.exports = router;

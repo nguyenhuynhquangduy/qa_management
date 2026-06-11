@@ -443,6 +443,101 @@ const getAPIdapVien = async (req, res, next) => {
         next(e);
     }
 }
+
+const getAPIthanhPham = async (req, res, next) => {
+    try {
+        const losanxuatId = req.query.id || '';
+        const thanhpham = await db.thanhpham.findOne({ where: { losanxuatId }, raw: true });
+        if (!thanhpham) return res.status(404).json(null);
+
+        const hoatchats = await db.hoatchatsanxuat.findAll({
+            where: { losanxuatId },
+            attributes: [
+                'id', 'tenHoatChat',
+                'thanhPham_dinhLuong', 'thanhPham_doRa',
+                'thanhPham_hoatan1_vien1', 'thanhPham_hoatan1_vien2', 'thanhPham_hoatan1_vien3',
+                'thanhPham_hoatan1_vien4', 'thanhPham_hoatan1_vien5', 'thanhPham_hoatan1_vien6',
+                'thanhPham_hoatan2_vien1', 'thanhPham_hoatan2_vien2', 'thanhPham_hoatan2_vien3',
+                'thanhPham_hoatan2_vien4', 'thanhPham_hoatan2_vien5', 'thanhPham_hoatan2_vien6',
+                'DDDVL_TB', 'DDDVL_AV',
+                'DDDVL_Vien1', 'DDDVL_Vien2', 'DDDVL_Vien3', 'DDDVL_Vien4', 'DDDVL_Vien5',
+                'DDDVL_Vien6', 'DDDVL_Vien7', 'DDDVL_Vien8', 'DDDVL_Vien9', 'DDDVL_Vien10',
+                'thanhPham_doAm'
+            ],
+            raw: true
+        });
+        thanhpham.hoatchats = hoatchats;
+        return res.status(200).json(thanhpham);
+    } catch (e) {
+        console.error("Lỗi khi lấy dữ liệu thành phẩm:", e);
+        res.status(500).json({ message: "Lỗi hệ thống nội bộ", error: e.message });
+        next(e);
+    }
+}
+
+const postAPIthanhPham = async (req, res, next) => {
+    const transaction = await db.sequelize.transaction();
+    try {
+        const losanxuatId = req.body.losanxuatId || '';
+        const sanpham = await db.losanxuat.findByPk(losanxuatId, { transaction });
+
+        if (!sanpham) {
+            await transaction.rollback();
+            return res.status(404).json({ message: "Sản phẩm không tồn tại!" });
+        }
+        if (sanpham.status === "completed") {
+            await transaction.rollback();
+            return res.status(400).json({ message: "Sản phẩm đã hoàn thành không thể cập nhật!" });
+        }
+
+        // Tách các trường liên quan đến hoạt chất ra khỏi body chính
+        const hoatchatFields = {};
+        const thanhphamData = {};
+
+        for (const key in req.body) {
+            if (key.startsWith('thanhPham_') || key.startsWith('DDDVL_')) {
+                hoatchatFields[key] = req.body[key];
+            } else {
+                thanhphamData[key] = req.body[key];
+            }
+        }
+
+        // Cập nhật hoặc tạo mới bản ghi thanhpham chính
+        await db.thanhpham.upsert(thanhphamData, { transaction });
+
+        // Cập nhật các trường hoạt chất
+        for (const fieldName in hoatchatFields) {
+            const hoatChatValues = hoatchatFields[fieldName]; // Đây là một object { id: value, ... }
+
+            if (hoatChatValues && typeof hoatChatValues === 'object') {
+                for (const hoatChatId in hoatChatValues) {
+                    const value = hoatChatValues[hoatChatId];
+
+                    const hoatchat = await db.hoatchatsanxuat.findByPk(parseInt(hoatChatId), { transaction });
+
+                    if (!hoatchat) {
+                        await transaction.rollback();
+                        return res.status(404).json({ message: `Hoạt chất ID ${hoatChatId} không tồn tại!` });
+                    }
+
+                    // Cập nhật trường tương ứng trong hoatchatsanxuat
+                    // Đảm bảo rằng trường `fieldName` tồn tại trong model `hoatchatsanxuat`
+                    hoatchat[fieldName] = value;
+                    await hoatchat.save({ transaction });
+                }
+            }
+        }
+
+        await transaction.commit();
+        return res.status(200).json({ message: "Cập nhật thông tin thành phẩm thành công!" });
+
+    } catch (e) {
+        if (transaction) await transaction.rollback();
+        console.error("Lỗi khi cập nhật thông tin thành phẩm:", e);
+        return res.status(500).json({ message: "Lỗi hệ thống nội bộ", error: e.message });
+    }
+}
+
 module.exports = {
     getAPIdapVien,
     postAPIdapVien,
@@ -450,6 +545,8 @@ module.exports = {
     postAPI_BTPcom,
     postAPIthongTinPhaChe,
     getAPIthongTinPhaChe,
+    getAPIthanhPham,
+    postAPIthanhPham,
     getEditSanPham,
     postUpdateSanPham,
     deleteSanPham,

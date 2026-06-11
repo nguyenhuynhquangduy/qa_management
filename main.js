@@ -12,22 +12,22 @@ expressApp.listen(port, () => {
   console.log(`Express running on http://localhost:${port}/`);
 });
 
-function createWindow () {
+function createWindow() {
   const win = new BrowserWindow({
-    width: 1200,
-    height: 800,
+    width: 1600,
+    height: 900,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
-    icon: path.join(__dirname, 'public','image', 'ndsoft.ico')
+    icon: path.join(__dirname, 'public', 'image', 'ndsoft.ico')
 
   });
 
-   win.loadURL(`http://localhost:${port}/`);
+  win.loadURL(`http://localhost:${port}/`);
 }
 // Sự kiện Electron
 app.on('window-all-closed', () => {
-    if (process.platform !== 'darwin') app.quit();
+  if (process.platform !== 'darwin') app.quit();
 });
 
 
