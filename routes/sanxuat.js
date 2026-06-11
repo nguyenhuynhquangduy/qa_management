@@ -18,4 +18,7 @@ router.post('/api/edit-thongtinphache', isLoggedIn, logs, sanxuat.postAPIthongTi
 router.get('/api/get-btpcom', isLoggedIn, sanxuat.getAPI_BTPcom);
 router.post('/api/edit-btpcom', isLoggedIn, logs, sanxuat.postAPI_BTPcom);
 
+router.get('/api/get-dapvien', isLoggedIn, sanxuat.getAPIdapVien);
+router.post('/api/edit-dapvien', isLoggedIn, logs, sanxuat.postAPIdapVien);
+
 module.exports = router;

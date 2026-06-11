@@ -1,0 +1,189 @@
+.btn.btn-outline-primary.mt-4#btnDapVien(type="button" data-id=sanpham.id) Dập viên/Bao phim/Đóng nang
+.section#dapVien.hidden.card        
+    form.row.border#formDapVien(method="POST")
+        input(type="hidden" name="losanxuatId" value=sanpham.id)
+        .col-md-4
+            .form-group
+                label.font-color(for='khoiLuongYeuCauDap') Khối Lượng Viên (mg) (Yêu cầu )
+                input.form-control(type='text' name='KLV_yeucau' id='khoiLuongYeuCauDap')
+            .form-group
+                label.font-color(for='khoiLuongPKN') Khối Lượng Viên (PKN)
+                input.form-control(type='text' name='KLV_PKN' id='khoiLuongPKN')
+            .form-group.border.mt-4
+                label.font-color Định lượng 
+                br
+                .div.ms-4
+                    each hoatchat in hoatchats
+                        label(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        input.form-control(type='number' name=`dapVien_dinhLuong[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` min="0" max="1000" step="0.01" placeholder='ex: 1.01')
+            .form-group
+                label.font-color(for='dongdeudonvilieu') Đồng đều đồn vị liều
+                input.form-control(type='text' name='dongDeuDonViLieu' id='dongdeudonvilieu')
+            .form-group
+                label.font-color(for='ra') Rã
+                input.form-control(type='text' name='ra' id='ra')
+        .col-md-4       
+            .form-group.border.mt-4
+                label.font-color Hoà tan (S1)
+                br
+                .div.ms-4
+                    each hoatchat in hoatchats
+                        label(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        input.form-control(type='number' name=`dapVien_hoatan1[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+            .form-group.border.mt-4
+                label.font-color Hoà tan (S2)
+                br
+                .div.ms-4
+                    each hoatchat in hoatchats
+                        label(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        input.form-control(type='number' name=`dapVien_hoatan2[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+        .col-md-4        
+            .form-group 
+                label.font-color(for='doRa') Tạp đơn
+                input.form-control(type='text' name='tapDon' id='tapDon')
+            .form-group
+                label.font-color(for='tapKhac') Tạp khác
+                input.form-control(type='text' name='tapKhac' id='tapKhac')
+            .form-group
+                label.font-color(for='tongTap') Tổng tạp
+                input.form-control(type='text' name='tongTap' id='tongTap')
+    .btn.btn-primary.mt-4#saveDapVien(type='submit') Lưu            
+        
+                        
+
+script.
+    let isLoadingDapVien = false;
+    $('#btnDapVien').on('click', async function() {
+        //- $('#dapVien').slideToggle();
+        if (isLoadingDapVien) return;
+        isLoadingDapVien = true;
+    try{
+        if($('#dapVien').is(':hidden')){
+            const id = $('#btnDapVien').data('id');
+            const url = `/sanxuat/api/get-dapvien?id=${id}`;
+            const response = await fetch(url);
+            const data = await response.json();
+       
+            if(data){
+                // Tự động đổ dữ liệu vào các ô input tương ứng theo thuộc tính name
+            Object.keys(data).forEach(key => {
+                if (key === 'hoatchats') return; // Bỏ qua mảng hoạt chất để xử lý riêng bên dưới
+                const $input = $(`#formDapVien [name="${key}"]`);
+                if ($input.length) {
+                    $input.val(data[key]);
+                }
+            })
+            //Xữ lý mảng hoạt chất
+            if (data.hoatchats && Array.isArray(data.hoatchats)) {
+                data.hoatchats.forEach(hoatchat => {
+                    const $hoatChatInput1 = $(`#formDapVien input[name="dapVien_dinhLuong[${hoatchat.id}]"]`);
+                    const $hoatChatInput2 = $(`#formDapVien input[name="dapVien_hoatan1[${hoatchat.id}]"]`);
+                    const $hoatChatInput3 = $(`#formDapVien input[name="dapVien_hoatan2[${hoatchat.id}]"]`);
+                    if ($hoatChatInput1.length) {
+                        $hoatChatInput1.val(hoatchat.dapVien_dinhLuong);
+                    }
+                    if ($hoatChatInput2.length) {
+                        $hoatChatInput2.val(hoatchat.dapVien_hoatan1);
+                    }
+                    if ($hoatChatInput3.length) {
+                        $hoatChatInput3.val(hoatchat.dapVien_hoatan2);
+                    }
+                });
+            }
+        
+        }}
+        $('#dapVien').slideToggle();
+        }catch(e){
+            console.error(e);
+        }finally{
+        setTimeout(() => {
+            isLoadingDapVien = false;
+        }, 500);
+        }
+    })
+    // 1. SỬA: Đổi từ const thành let để có thể gán lại giá trị
+    let savingDapVien = false; 
+    let count = 0;
+    let action = 0;
+    $('#saveDapVien').on('click', async function(e) {
+        e.preventDefault();
+        count +=1;
+        console.log('count:' ,count)
+        // Chống spam click
+        if (savingDapVien) return;
+        savingDapVien = true;
+        
+        try {
+            // Thu thập dữ liệu từ các input, select, textarea trong container #formDapVien
+            const data = {
+                dapVien_dinhLuong: {},
+                dapVien_hoatan1: {},
+                dapVien_hoatan2: {}
+            };
+            action += 1;
+            console.log("action:",action);
+            // Tìm tất cả các trường nhập liệu để tránh bỏ sót select/textarea
+            $('#formDapVien').find('input, select, textarea').each(function() {
+                const $el = $(this);
+                const name = $el.attr('name');
+                if (!name) return;
+                
+                // Xử lý lấy giá trị chuẩn cho từng loại input
+                let val;
+                if ($el.attr('type') === 'checkbox') {
+                    val = $el.is(':checked');
+                } else if ($el.attr('type') === 'radio') {
+                    // Nếu là radio, chỉ lấy giá trị của thẻ đang được chọn
+                    if (!$el.is(':checked')) return;
+                    val = $el.val();
+                } else {
+                    val = $el.val();
+                }
+                
+                // Phân tách các trường có cấu trúc dạng mảng/object: name[id]
+                const match_dinhLuong = name.match(/^dapVien_dinhLuong\[(\d+)\]$/);
+                const match_hoatan1  = name.match(/^dapVien_hoatan1\[(\d+)\]$/);
+                const match_hoatan2  = name.match(/^dapVien_hoatan2\[(\d+)\]$/);
+                
+                if (match_dinhLuong) {
+                    const id = match_dinhLuong[1];
+                    data['dapVien_dinhLuong'][id] = val;
+                } else if (match_hoatan1) {
+                    const id = match_hoatan1[1];
+                    data['dapVien_hoatan1'][id] = val;
+                } else if (match_hoatan2) {
+                    const id = match_hoatan2[1];
+                    data['dapVien_hoatan2'][id] = val;
+                } else {
+                    // Các trường bình thường khác
+                    data[name] = val;
+                }
+            });
+            
+            // 2. SỬA: Gộp chung 1 khối try-catch để gửi API
+            const response = await fetch('/sanxuat/api/edit-dapvien', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                toast(result.message || 'Lưu thông tin thành công!', '#28a745');
+            } else {
+                toast(result.message || 'Có lỗi xảy ra khi lưu dữ liệu!', '#dc3545');
+            }
+            
+        } catch (error) {
+            console.error('Lỗi khi xử lý hoặc gửi dữ liệu:', error);
+            toast('Không thể kết nối đến máy chủ hoặc lỗi xử lý dữ liệu!', '#dc3545');
+        } finally {
+            // Mở khóa cho phép bấm lại sau 500ms
+            setTimeout(() => {
+                savingDapVien = false;
+            }, 1500);       
+        }
+    });

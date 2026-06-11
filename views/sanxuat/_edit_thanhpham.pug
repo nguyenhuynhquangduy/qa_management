@@ -1,0 +1,8 @@
+.btn.btn-outline-primary.mt-4#btnThanhPham(type="button" data-id=sanpham.id) Thành phẩm
+    .section#thanhPham.hidden.card        
+        form.row.border#formThanhPham(method="POST")
+            input(type="hidden" name="losanxuatId" value=sanpham.id)
+            .col-md-4
+                .form-group
+                    label.font-color(for='khoiLuongYeuCauDap') Khối Lượng Viên (mg) (Yêu cầu )
+                    input.form-control(type='text' name='KLV_yeucau' id='khoiLuongYeuCauDap')

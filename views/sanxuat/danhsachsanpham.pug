@@ -248,7 +248,7 @@ html(lang="vi")
             $('#tableBody').on('click', '.edit-all-btn', function() {
                 const sanpham = JSON.parse(this.dataset.sanpham || '{}');
                 const id = sanpham.id || '';
-                console.log("ID:", id);
+                //- console.log("ID:", id);
                 if(id) {
                     window.location.href = `/sanxuat/edit-sanpham?id=${id}`;
                 }
