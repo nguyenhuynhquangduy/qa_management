@@ -1,0 +1,364 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        //- link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/newStyle.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        link(rel='stylesheet' href='/css/jquery-ui.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/jquery-ui.min.js")
+        script(src="/js/bootstrap.bundle.min.js")   
+        title Chi tiết - #{losanxuat.name}
+        style.
+            body  (background-color: #f8f9fa; padding: 10px; !important)
+            .card { border: none; box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); margin-bottom: 20px; border-radius: 10px; }
+            .card-header { background-color: #fff; border-bottom: 1px solid #edf2f9; font-weight: bold; color: #4e73df; }
+            .info-label { color: #858796; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 2px; }
+            .info-value { color: #3a3b45; font-weight: 700; font-size: 1.1rem; }
+            .info-value div { display: inline-block; } /* Tránh hoat chat bi xuong hang vo toi va */
+            .badge-status { padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; }
+            .table-custom thead { background-color: #f8f9fc; }
+            .section-title { border-left: 4px solid #4e73df; padding-left: 10px; margin: 20px 0 15px 0; color: #3a3b45; font-weight: 700; }
+            .text-highlight { color: #e74a3b; }
+            @media print { 
+                .no-print { display: none !important; } 
+                body { background-color: #fff; padding: 0; } 
+                .container-fluid { width: 100%; padding: 0; margin: 0; }
+                .card { box-shadow: none; border: 1px solid #ddd; margin-bottom: 10px; page-break-inside: avoid; } 
+                .card-header { background-color: #f8f9fc !important; -webkit-print-color-adjust: exact; }
+                .bg-primary { background-color: #4e73df !important; -webkit-print-color-adjust: exact; }
+                .text-white { color: #fff !important; }
+                .info-value { font-size: 1rem; }
+                /* Đảm bảo Grid Bootstrap không bị nhảy hàng khi in */
+                .row { display: flex !important; flex-wrap: wrap !important; }
+                .col-1 { width: 8.33%; } .col-2 { width: 16.66%; } .col-3 { width: 25%; }
+                .col-4 { width: 33.33%; } .col-5 { width: 41.66%; } .col-6 { width: 50%; }
+                .col-7 { width: 58.33%; } .col-8 { width: 66.66%; } .col-9 { width: 75%; }
+                .col-10 { width: 83.33%; } .col-11 { width: 91.66%; } .col-12 { width: 100%; }
+                table { width: 100% !important; border-collapse: collapse; }
+                .table-responsive { overflow: visible !important; }
+                button {
+                    display: none !important;
+                }
+            }
+
+    body
+        .container-fluid
+            // Header / Navigation
+            .row.mb-3.no-print
+                .col-md-6.text-start
+                    button.btn.btn-outline-primary.btn-sm(onclick="window.history.back()")
+                        i.fas.fa-arrow-left.me-2
+                        | Quay lại danh sách
+                .col-md-6.text-end
+                    button.btn.btn-outline-secondary.btn-sm.me-2(onclick="window.print()")
+                        i.fas.fa-print.me-2
+                        | In báo cáo
+                    button.btn.btn-primary.btn-sm(onclick="window.location.reload()")  
+                        i.fas.fa-sync-alt.me-2
+                        | Làm mới
+
+            // Batch Header Card
+            .title
+                .card.bg-primary.text-white.mb-4
+                    .card-body.p-4
+                        .row.align-items-center
+                            .col
+                                h3.mb-1.fw-bold LÔ SẢN XUẤT: #{losanxuat.soLo}
+                                p.mb-0.opacity-75 #{losanxuat.tenSanPham} | #{losanxuat.quyCachDongGoi}
+                            .col-auto.text-end
+                                if losanxuat.status === 'active'
+                                    span.badge.bg-warning.text-dark.badge-status ĐANG SẢN XUẤT
+                                else if losanxuat.status === 'completed'
+                                    span.badge.bg-success.badge-status ĐÃ HOÀN THÀNH
+                                else
+                                    span.badge.bg-secondary.badge-status #{losanxuat.status}
+
+            // 1. Nhóm: Thông tin chung (LoSanXuat)
+            .card
+                .card-header
+                    i.fas.fa-circle-info.me-2
+                    | 1. THÔNG TIN CHUNG
+                .card-body
+                    .row.g-3
+                        .col-3: .info-label Số lô
+                            .info-value #{losanxuat.soLo}
+                        .col-2: .info-label Thẩm định
+                            .info-value
+                                if losanxuat.thamDinh
+                                    span.text-success CÓ
+                                else
+                                    span.text-muted KHÔNG
+                        .col-4: .info-label Tên sản phẩm
+                            .info-value #{losanxuat.tenSanPham}
+                        .col-3: .info-label Dạng bào chế
+                            .info-value #{losanxuat.dangBaoChe || '---'}
+                        .col-3: .info-label Quy Cách Đóng Gói
+                            .info-value #{losanxuat.quyCachDongGoi || '---'}
+                        .col-2: .info-label Cỡ lô
+                            .info-value #{losanxuat.coLo || '---'}
+                        .col-7: .info-label Hoạt chất
+                            .info-value
+                                if losanxuat.hoatchats && losanxuat.hoatchats.length > 0
+                                    each hc, index in losanxuat.hoatchats
+                                        div #{hc.tenHoatChat}#{index < losanxuat.hoatchats.length - 1 ? ', ' : ''}
+                                else
+                                    span.text-muted ---
+                        //- .col-md-2: .info-label Ghi chú 
+                        //-     .info-value #{losanxuat.ghiChu || '---'}
+                    if losanxuat.ghiChu
+                        .mt-3.pt-2.border-top
+                            .info-label Ghi chú
+                            .p-2.bg-light.rounded.small #{losanxuat.ghiChu}
+
+            // 2. Nhóm: Thông tin pha chế
+            .card
+                .card-header
+                    i.fas.fa-blender.me-2
+                    | 2. THÔNG TIN PHA CHẾ
+                .card-body
+                    if losanxuat.phache
+                        .row.g-3
+                            .col-3: .info-label Ngày pha chế
+                                .info-value #{losanxuat.phache.ngayPhache ? new Date(losanxuat.phache.ngayPhache).toLocaleDateString('vi-VN') : '---'}
+                            .col-3: .info-label Hệ số bù
+                                .info-value #{losanxuat.phache.heSoBu || '---'}
+                            .col-3: .info-label Ngày đóng gói cấp 1
+                                .info-value #{losanxuat.phache.ngayDongGoiCap1 ? new Date(losanxuat.phache.ngayDongGoiCap1).toLocaleDateString('vi-VN') : '---'}
+                            .col-6: .info-label.border.rounded.text-center Độ ẩm cốm màu 1
+                                .row
+                                    .col-4: .info-label Sấy 1
+                                        .info-value #{losanxuat.phache.say1 || '---'}
+                                    .col-4: .info-label Trộn hoàn tất 1
+                                        .info-value #{losanxuat.phache.THT1 || '---'}
+                                    .col-4: .info-label Viên 1
+                                        .info-value #{losanxuat.phache.vien1 || '---'}
+                            .col-6: .info-label.border.rounded.text-center Độ ẩm cốm màu 2
+                                .row
+                                    .col-4: .info-label Sấy 2
+                                        .info-value #{losanxuat.phache.say2 || '---'}
+                                    .col-4: .info-label Trộn hoàn tất 2
+                                        .info-value #{losanxuat.phache.THT2 || '---'}
+                                    .col-4: .info-label Viên 2
+                                        .info-value #{losanxuat.phache.vien2 || '---'}
+                            .col-2: .info-label Độ cứng
+                                .info-value #{losanxuat.phache.doCung || '---'}
+                            .col-2: .info-label Độ rã
+                                .info-value #{losanxuat.phache.doRa || '---'}
+                            .col-3: .info-label Độ mài mòn
+                                .info-value #{losanxuat.phache.doMayMon || '---'}
+                            .col-2: .info-label Khối lượng cốm
+                                .info-value #{losanxuat.phache.khoiLuongCom || '---'}
+                            //- .col-3: .info-label KL Giao nộp
+                            //-     .info-value #{losanxuat.phache.khoiLuongGiaoNop || '---'}
+                    else
+                        p.text-muted.text-center.mb-0 Chưa có dữ liệu pha chế.
+
+            // 3. Nhóm: Thông tin BTPcom & Định lượng Cốm
+            .card
+                .card-header
+                    i.fas.fa-boxes-stacked.me-2
+                    | 3. BÁN THÀNH PHẨM (BTP CỐM)
+                .card-body
+                    if losanxuat.BTPcom
+                        .row.g-3.mb-4
+                            .col-3: .info-label Khối lượng yêu cầu dập
+                                .info-value #{losanxuat.BTPcom.KLV_yeucaudap || '---'}
+                            .col-2: .info-label Khối lượng QC
+                                .info-value #{losanxuat.BTPcom.KLV_QC || '---'}
+                            .col-2: .info-label Tạp đơn
+                                .info-value #{losanxuat.BTPcom.tapDon || '---'}
+                            .col-2: .info-label Tạp khác
+                                .info-value #{losanxuat.BTPcom.tapKhac || '---'}
+                            .col-3: .info-label Tổng tạp
+                                .info-value #{losanxuat.BTPcom.tongTap || '---'}
+                    
+                    h6.section-title Định lượng hoạt chất trong Cốm
+                    .table-responsive
+                        table.table.table-sm.table-bordered
+                            thead.table-light
+                                tr
+                                    th Hoạt chất
+                                    th.text-center BTP_dinhLuong (%)
+                            tbody
+                                if losanxuat.hoatchats
+                                    each hc in losanxuat.hoatchats
+                                        tr
+                                            td #{hc.tenHoatChat}
+                                            td.text-center.fw-bold.text-primary #{hc.BTP_dinhLuong || '---'}
+
+            // 4. Nhóm: Thông tin dapvien & Kiểm nghiệm Dập viên
+            .card
+                .card-header
+                    i.fas.fa-tablet-screen-button.me-2
+                    | 4. DẬP VIÊN - BAO PHIM - ĐÓNG NANG
+                .card-body
+                    if losanxuat.dapvien
+                        .row.g-3.mb-4
+                            .col-2: .info-label Khối lượng yêu cầu
+                                .info-value #{losanxuat.dapvien.KLV_yeucau || '---'}
+                            .col-2: .info-label Khối lượng PKN
+                                .info-value #{losanxuat.dapvien.KLV_PKN || '---'}
+                            .col-2: .info-label ĐĐ đơn vị liều
+                                .info-value #{losanxuat.dapvien.dongDeuDonViLieu || '---'}
+                            .col-2: .info-label Độ rã
+                                .info-value #{losanxuat.dapvien.ra || '---'}
+                            .col-4 
+                                .row     
+                                    .col: .info-label Tạp đơn
+                                        .info-value #{losanxuat.dapvien.tapDon || '---'}
+                                    .col: .info-label Tạp khác
+                                        .info-value #{losanxuat.dapvien.tapKhac || '---'}
+                                    .col: .info-label Tổng tạp
+                                        .info-value #{losanxuat.dapvien.tongTap || '---'}
+                    
+                    h6.section-title Kiểm nghiệm hoạt chất (Giai đoạn Dập viên)
+                    .table-responsive
+                        table.table.table-sm.table-bordered
+                            thead.table-light
+                                tr
+                                    th Hoạt chất
+                                    th.text-center Định lượng (%)
+                                    th.text-center Độ hòa tan 1
+                                    th.text-center Độ hòa tan 2
+                            tbody
+                                if losanxuat.hoatchats
+                                    each hc in losanxuat.hoatchats
+                                        tr
+                                            td #{hc.tenHoatChat}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_dinhLuong || '---'}
+                                            td.text-center #{hc.dapVien_hoatan1 || '---'}
+                                            td.text-center #{hc.dapVien_hoatan2 || '---'}
+
+            // 5. Nhóm: Thông tin thành phẩm & Chi tiết kiểm nghiệm TP
+            .card
+                .card-header
+                    i.fas.fa-vial-circle-check.me-2
+                    | 5. THÀNH PHẨM
+                .card-body
+                    if losanxuat.thanhpham
+                        .row.g-3.mb-4
+                            .col-2: .info-label Ngày kiểm
+                                .info-value #{losanxuat.thanhpham.ngayKiem ? new Date(losanxuat.thanhpham.ngayKiem).toLocaleDateString('vi-VN') : '---'}
+                            .col-2: .info-label Ngày đóng gói cấp 2
+                                .info-value #{losanxuat.thanhpham.ngayDongGoiCap2 ? new Date(losanxuat.thanhpham.ngayDongGoiCap2).toLocaleDateString('vi-VN') : '---'}
+                            .col-2: .info-label Số lượng giao nộp
+                                .info-value #{losanxuat.thanhpham.soLuongGiaoNop || '---'}
+                            .col-2: .info-label Lô CF
+                                .info-value #{losanxuat.thanhpham.loCF || '---'}
+                            .col-2: .info-label Khối lượng (KLV)
+                                .info-value #{losanxuat.thanhpham.KLV || '---'}
+                            .col-2: .info-label Tạp 4-Amino
+                                .info-value #{losanxuat.thanhpham.tap4Amino || '---'}
+                            .col-2: .info-label Tạp đơn
+                                .info-value #{losanxuat.thanhpham.tapDon || '---'}
+                            .col-2: .info-label Tạp khác
+                                .info-value #{losanxuat.thanhpham.tapKhac || '---'}
+                            .col-2: .info-label Tổng tạp
+                                .info-value #{losanxuat.thanhpham.tongTap || '---'}
+                            .col-2: .info-label Độ mịn (Lớn/Nhỏ)
+                                .info-value #{losanxuat.thanhpham.doMinLon || '---'} / #{losanxuat.thanhpham.doMinNho || '---'}
+                            .col-2: .info-label Số sai lệch
+                                .info-value #{losanxuat.thanhpham.soSaiLech || '---'}
+                            .col-2: .info-label Số KS thay đổi
+                                .info-value #{losanxuat.thanhpham.soKiemSoatThayDoi || '---'}
+                            .col-5: .info-label Ghi chú (TP)
+                                .info-value #{losanxuat.thanhpham.ghiChu || '---'}
+                    
+                    h6.section-title Định lượng & Độ rã & Độ ẩm (Thành phẩm)
+                    .table-responsive.mb-4
+                        table.table.table-sm.table-bordered
+                            thead.table-light
+                                tr
+                                    th Hoạt chất
+                                    th.text-center Định lượng (%)
+                                    th.text-center Độ rã
+                                    th.text-center Độ ẩm
+                            tbody
+                                if losanxuat.hoatchats
+                                    each hc in losanxuat.hoatchats
+                                        tr
+                                            td #{hc.tenHoatChat}
+                                            td.text-center.fw-bold.text-success #{hc.thanhPham_dinhLuong || '---'}
+                                            td.text-center #{hc.thanhPham_doRa || '---'}
+                                            td.text-center #{hc.thanhPham_doAm || '---'}
+
+                    h6.section-title Chi tiết Độ hòa tan (Thành phẩm)
+                    .table-responsive.mb-4
+                        table.table.table-sm.table-bordered
+                            thead.table-light
+                                tr
+                                    th Hoạt chất
+                                    th Loại
+                                    th.text-center V1
+                                    th.text-center V2
+                                    th.text-center V3
+                                    th.text-center V4
+                                    th.text-center V5
+                                    th.text-center V6
+                            tbody
+                                if losanxuat.hoatchats
+                                    each hc in losanxuat.hoatchats
+                                        tr
+                                            td.fw-bold(rowspan="2") #{hc.tenHoatChat}
+                                            td HT1 (%)
+                                            td.text-center #{hc.thanhPham_hoatan1_vien1 || '-'}
+                                            td.text-center #{hc.thanhPham_hoatan1_vien2 || '-'}
+                                            td.text-center #{hc.thanhPham_hoatan1_vien3 || '-'}
+                                            td.text-center #{hc.thanhPham_hoatan1_vien4 || '-'}
+                                            td.text-center #{hc.thanhPham_hoatan1_vien5 || '-'}
+                                            td.text-center #{hc.thanhPham_hoatan1_vien6 || '-'}
+                                        tr
+                                            td HT2 (%)
+                                            td.text-center #{hc.thanhPham_hoatan2_vien1 || '-'}
+                                            td.text-center #{hc.thanhPham_hoatan2_vien2 || '-'}
+                                            td.text-center #{hc.thanhPham_hoatan2_vien3 || '-'}
+                                            td.text-center #{hc.thanhPham_hoatan2_vien4 || '-'}
+                                            td.text-center #{hc.thanhPham_hoatan2_vien5 || '-'}
+                                            td.text-center #{hc.thanhPham_hoatan2_vien6 || '-'}
+
+                    h6.section-title Độ đồng đều đơn vị liều (DDDVL)
+                    .table-responsive
+                        table.table.table-sm.table-bordered
+                            thead.table-light
+                                tr
+                                    th Hoạt chất
+                                    th.text-center V1
+                                    th.text-center V2
+                                    th.text-center V3
+                                    th.text-center V4
+                                    th.text-center V5
+                                    th.text-center V6
+                                    th.text-center V7
+                                    th.text-center V8
+                                    th.text-center V9
+                                    th.text-center V10
+                                    th.text-center TB
+                                    th.text-center AV
+                            tbody
+                                if losanxuat.hoatchats
+                                    each hc in losanxuat.hoatchats
+                                        tr
+                                            td.small.fw-bold #{hc.tenHoatChat}
+                                            td.text-center #{hc.DDDVL_Vien1 || '-'}
+                                            td.text-center #{hc.DDDVL_Vien2 || '-'}
+                                            td.text-center #{hc.DDDVL_Vien3 || '-'}
+                                            td.text-center #{hc.DDDVL_Vien4 || '-'}
+                                            td.text-center #{hc.DDDVL_Vien5 || '-'}
+                                            td.text-center #{hc.DDDVL_Vien6 || '-'}
+                                            td.text-center #{hc.DDDVL_Vien7 || '-'}
+                                            td.text-center #{hc.DDDVL_Vien8 || '-'}
+                                            td.text-center #{hc.DDDVL_Vien9 || '-'}
+                                            td.text-center #{hc.DDDVL_Vien10 || '-'}
+                                            td.text-center.fw-bold #{hc.DDDVL_TB || '-'}
+                                            td.text-center.fw-bold.text-danger #{hc.DDDVL_AV || '-'}
+
+            // Footer Section
+            .row.mt-4.no-print
+                .col-12.text-center.text-muted
+                    p.small Hệ thống QA Manager v1.0 | Ngày truy xuất: #{new Date().toLocaleString()}

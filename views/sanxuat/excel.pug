@@ -1,0 +1,69 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/newStyle.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        link(rel='stylesheet' href='/css/jquery-ui.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/jquery-ui.min.js")
+        script(src="/js/bootstrap.bundle.min.js")   
+        style.
+            body { background-color: #f8f9fa; padding: 10px;font-family: 'Arial', Times, serif; }
+            .card { border: none; shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); }
+            .error-feedback { color: #dc3545; font-size: 0.875em; display: none; }
+            .hidden{ display: none; }
+            .font-auto {
+                font-size: clamp(12px, 1.2vw, 18px);
+                white-space: nowrap; 
+            }
+            .font-mini{
+                font-size: clamp(10px, 1.2vw, 15px);
+                white-space: nowrap; 
+            }
+            .font-mini input{
+                font-size: clamp(8px, 1.2vw, 13px);
+                white-space: nowrap; 
+            }
+            .font-color{
+                color: var(--accent); /* Phải có var() và -- */
+            }
+    body
+        .card
+            .card-header
+                h3.panel-title
+                    | Excel
+            .card-body.p-4
+                    if errorMessages && errorMessages.length
+                        .alert.alert-danger
+                            each msg in errorMessages
+                                div= msg
+                    if successMessages && successMessages.length
+                        .alert.alert-success
+                            each msg in successMessages
+                                div= msg        
+            .card-body
+                .container-fluid
+                    .card.card-body
+                        h2.panel-danhsach
+                            a.btn.btn-primary.btn-sm(href='/sanxuat/getExportDanhsachsanpham',style='font-size:22px') Export danh sách sản phẩm (viên cốm)
+                        h2.panel-danhsach    
+                            a.btn.btn-primary.btn-sm(href='/sanxuat/getImportDanhsachsanpham',style='font-size:22px') Import danh sách sản phẩm (về cốm)
+                        h2.panel-danhsach
+                            a.btn.btn-primary.btn-sm(href='/import_vien_com.xlsx',style='font-size:22px') Tải file import mẫu (về cốm)    
+                        //- if customer.phanquyens.includes('XuatKhachhang')            
+                        //-     h2.panel-danhsach
+                        //-         a(href='/export/khachhang',style='font-size:22px') Danh sách khách hàng 
+                        //- if customer.phanquyens.includes('XuatPhieusuachua')            
+                        //-     h2.panel-danhsach
+                        //-         a(href='/export/phieusuachua',style='font-size:22px') Danh sách phiếu sửa chữa
+                        //- if customer.phanquyens.includes('XuatPhieumuahang')    
+                        //-     h2.panel-danhsach
+                        //-         a(href='/export/phieumuahang',style='font-size:22px') Danh sách phiếu mua hàng   
+                

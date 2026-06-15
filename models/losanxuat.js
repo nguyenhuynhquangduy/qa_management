@@ -39,6 +39,7 @@ module.exports = (sequelize, DataTypes) => {
     soLo: DataTypes.STRING,
     thamDinh: DataTypes.BOOLEAN,
     tenSanPham: DataTypes.STRING,
+    soDangKy: DataTypes.STRING,
     dangBaoChe: DataTypes.STRING,
     quyCachDongGoi: DataTypes.STRING,
     coLo: DataTypes.STRING,

@@ -148,9 +148,9 @@ html(lang="vi")
                     .form-group
                         label.font-color(for='khoiLuongCom') Khối Lượng Cốm
                         input.form-control(type='text' name='khoiLuongCom' id='khoiLuongCom')
-                    .form-group
+                    .form-group.hidden
                         label.font-color(for='khoiLuongGiaoNop') Khối Lượng Giao Nộp
-                        input.form-control(type='text' name='khoiLuongGiaoNop' id='khoiLuongGiaoNop')
+                        input.form-control(type='text' name='khoiLuongGiaoNop' id='khoiLuongGiaoNop' disabled)
             .btn.btn-primary.mt-4#saveThongTinPhaChe(type='submit') Lưu
         .btn.btn-outline-primary.mt-4#btnBTPCom(type="button" data-id=sanpham.id) BTP - Cốm             
         .section#BTPCom.hidden.card        

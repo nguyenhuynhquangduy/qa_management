@@ -22,21 +22,57 @@
             .form-group
                 label.font-color(for='ra') Rã
                 input.form-control(type='text' name='ra' id='ra')
-        .col-md-4       
-            .form-group.border.mt-4
-                label.font-color Hoà tan (S1)
-                br
-                .div.ms-4
-                    each hoatchat in hoatchats
-                        label(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
-                        input.form-control(type='number' name=`dapVien_hoatan1[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
-            .form-group.border.mt-4
-                label.font-color Hoà tan (S2)
-                br
-                .div.ms-4
-                    each hoatchat in hoatchats
-                        label(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
-                        input.form-control(type='number' name=`dapVien_hoatan2[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+        .col-md-4
+            label.font-color Hoà tan (S1)
+            br
+            .div.ms-4
+                each hoatchat in hoatchats
+                    .form-group.border.mt-1.p-1
+                        label.font-color.mb-3(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        .row.font-mini.p-0.text-center
+                            .col-md-2
+                                label Viên 1
+                                input.form-control(type='text' name=`dapVien_hoatan1_vien1[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 2
+                                input.form-control(type='text' name=`dapVien_hoatan1_vien2[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 3
+                                input.form-control(type='text' name=`dapVien_hoatan1_vien3[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 4
+                                input.form-control(type='text' name=`dapVien_hoatan1_vien4[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 5
+                                input.form-control(type='text' name=`dapVien_hoatan1_vien5[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 6
+                                input.form-control(type='text' name=`dapVien_hoatan1_vien6[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+            label.font-color Hoà tan (S2)
+            br
+            .div.ms-4
+                each hoatchat in hoatchats
+                    .form-group.border.mt-1.p-1
+                        label.font-color.mb-3(for=`hoatChat${hoatchat.tenHoatChat}`) #{hoatchat.tenHoatChat}
+                        .row.font-mini.p-0.text-center
+                            .col-md-2
+                                label Viên 1
+                                input.form-control(type='number' name=`dapVien_hoatan2_vien1[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 2
+                                input.form-control(type='number' name=`dapVien_hoatan2_vien2[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 3
+                                input.form-control(type='number' name=`dapVien_hoatan2_vien3[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 4
+                                input.form-control(type='number' name=`dapVien_hoatan2_vien4[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 5
+                                input.form-control(type='number' name=`dapVien_hoatan2_vien5[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
+                            .col-md-2
+                                label Viên 6
+                                input.form-control(type='number' name=`dapVien_hoatan2_vien6[${hoatchat.id}]` id=`hoatChat${hoatchat.tenHoatChat}` )
         .col-md-4        
             .form-group 
                 label.font-color(for='doRa') Tạp đơn
@@ -73,23 +109,17 @@ script.
                     $input.val(data[key]);
                 }
             })
-            //Xữ lý mảng hoạt chất
-            if (data.hoatchats && Array.isArray(data.hoatchats)) {
-                data.hoatchats.forEach(hoatchat => {
-                    const $hoatChatInput1 = $(`#formDapVien input[name="dapVien_dinhLuong[${hoatchat.id}]"]`);
-                    const $hoatChatInput2 = $(`#formDapVien input[name="dapVien_hoatan1[${hoatchat.id}]"]`);
-                    const $hoatChatInput3 = $(`#formDapVien input[name="dapVien_hoatan2[${hoatchat.id}]"]`);
-                    if ($hoatChatInput1.length) {
-                        $hoatChatInput1.val(hoatchat.dapVien_dinhLuong);
-                    }
-                    if ($hoatChatInput2.length) {
-                        $hoatChatInput2.val(hoatchat.dapVien_hoatan1);
-                    }
-                    if ($hoatChatInput3.length) {
-                        $hoatChatInput3.val(hoatchat.dapVien_hoatan2);
-                    }
-                });
-            }
+                        // Đổ dữ liệu mảng hoạt chất (Hòa tan, Định lượng...)
+                        if (data.hoatchats && Array.isArray(data.hoatchats)) {
+                            data.hoatchats.forEach(hoatchat => {
+                                Object.keys(hoatchat).forEach(attrKey => {
+                                    const $input = $(`#formDapVien [name="${attrKey}[${hoatchat.id}]"]`);
+                                    if ($input.length) {
+                                        $input.val(hoatchat[attrKey]);
+                                    }
+                                });
+                            });
+                        }
         
         }}
         $('#dapVien').slideToggle();
@@ -114,15 +144,7 @@ script.
         savingDapVien = true;
         
         try {
-            // Thu thập dữ liệu từ các input, select, textarea trong container #formDapVien
-            const data = {
-                dapVien_dinhLuong: {},
-                dapVien_hoatan1: {},
-                dapVien_hoatan2: {}
-            };
-            action += 1;
-            console.log("action:",action);
-            // Tìm tất cả các trường nhập liệu để tránh bỏ sót select/textarea
+            const data = {};
             $('#formDapVien').find('input, select, textarea').each(function() {
                 const $el = $(this);
                 const name = $el.attr('name');
@@ -140,24 +162,16 @@ script.
                     val = $el.val();
                 }
                 
-                // Phân tách các trường có cấu trúc dạng mảng/object: name[id]
-                const match_dinhLuong = name.match(/^dapVien_dinhLuong\[(\d+)\]$/);
-                const match_hoatan1  = name.match(/^dapVien_hoatan1\[(\d+)\]$/);
-                const match_hoatan2  = name.match(/^dapVien_hoatan2\[(\d+)\]$/);
-                
-                if (match_dinhLuong) {
-                    const id = match_dinhLuong[1];
-                    data['dapVien_dinhLuong'][id] = val;
-                } else if (match_hoatan1) {
-                    const id = match_hoatan1[1];
-                    data['dapVien_hoatan1'][id] = val;
-                } else if (match_hoatan2) {
-                    const id = match_hoatan2[1];
-                    data['dapVien_hoatan2'][id] = val;
-                } else {
-                    // Các trường bình thường khác
-                    data[name] = val;
-                }
+                    const match = name.match(/^(.+)\[(\d+)\]$/);
+                    if (match) {
+                        const fieldName = match[1];
+                        const hoatChatId = match[2];
+                        
+                        if (!data[fieldName]) data[fieldName] = {};
+                        data[fieldName][hoatChatId] = val;
+                    } else {
+                        data[name] = val;
+                    }
             });
             
             // 2. SỬA: Gộp chung 1 khối try-catch để gửi API

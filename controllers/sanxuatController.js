@@ -64,7 +64,7 @@ const getAddSanPham = async (req, res, next) => {
 const postAddSanPham = async (req, res, next) => {
     const transaction = await db.sequelize.transaction();
     try {
-        let { soLo, tenSanPham, dangBaoChe, quyCachDongGoi, ghiChu, tenHoatChat, coLo } = req.body;
+        let { soLo, tenSanPham, soDangKy, dangBaoChe, quyCachDongGoi, ghiChu, tenHoatChat, coLo } = req.body;
         const thamDinh = req.body.thamDinh === 'on' ? true : false;
         const validation = cleanAndValidateString(tenSanPham);
         if (!validation.isValid) {
@@ -76,6 +76,7 @@ const postAddSanPham = async (req, res, next) => {
         const sanpham = await db.losanxuat.create({
             soLo,
             tenSanPham,
+            soDangKy,
             dangBaoChe,
             quyCachDongGoi,
             ghiChu,
@@ -127,7 +128,7 @@ const postUpdateSanPham = async (req, res, next) => {
     const transaction = await db.sequelize.transaction();
     try {
         //lấy sản phẩm từ FE
-        let { id, soLo, tenSanPham, dangBaoChe, quyCachDongGoi, ghiChu, tenHoatChat, coLo, status } = req.body;
+        let { id, soLo, tenSanPham, soDangKy, dangBaoChe, quyCachDongGoi, ghiChu, tenHoatChat, coLo, status } = req.body;
         const thamDinh = req.body.thamDinh === 'on' ? true : false;
         // kiểm tra sản phẩm có tồn tại không
         const sanpham = await db.losanxuat.findByPk(id, {
@@ -157,6 +158,7 @@ const postUpdateSanPham = async (req, res, next) => {
         const sanphamUpdate = await sanpham.update({
             soLo,
             tenSanPham,
+            soDangKy,
             dangBaoChe,
             quyCachDongGoi,
             ghiChu,
@@ -348,77 +350,44 @@ const postAPIdapVien = async (req, res, next) => {
         const losanxuatId = req.body.losanxuatId || '';
         const sanpham = await db.losanxuat.findByPk(losanxuatId, { transaction });
         if (!sanpham) {
-            // Gặp lỗi thì hủy transaction trước khi return
             await transaction.rollback();
-            // return res.json({ message: "Sản phẩm không tốn tại !" });
             return res.status(404).json({ message: "Sản phẩm không tồn tại!" });
-
         }
         if (sanpham.status === "completed") {
             await transaction.rollback();
             return res.status(400).json({ message: "Sản phẩm đã hoàn thành không thể cập nhật!" });
         }
-        const { dapVien_dinhLuong, dapVien_hoatan1, dapVien_hoatan2, ...dapvien } = req.body;
-        // console.log("req.body:", req.body);
-        await db.dapvien.upsert(dapvien, { transaction });
-        // 2. Kiểm tra và bóc tách object BTP_dinhLuong an toàn
-        const dinhLuongInput = dapVien_dinhLuong || {};
-        const hoatan1Input = dapVien_hoatan1 || {};
-        const hoatan2Input = dapVien_hoatan2 || {};
-        // Sử dụng Object.entries để duyệt qua từng cặp ID và Giá trị
-        const danhSachDinhLuong = Object.entries(dinhLuongInput).map(([id, value]) => {
-            return {
-                id: parseInt(id),       // Chuyển key '6', '7' từ chuỗi thông thức (INT)
-                value: Number(value) // Chuyển value '97.02', '102.5' từ chuỗi thông thức (FLOAT)
-            };
-        });
-        // 3. SỬA LỖI: Dùng vòng lặp for...of để chạy được await chính xác từng bước
-        for (const item of danhSachDinhLuong) {
-            const hoatchat = await db.hoatchatsanxuat.findByPk(item.id, { transaction });
 
-            if (!hoatchat) {
-                // Nếu  1 hoạt chất lỗi, hủy toàn bộ quá trình (bao gồm cả lệnh upsert ở trên)
-                await transaction.rollback();
-                return res.status(404).json({ message: `Hoạt chất ID ${item.id} không tồn tại !` });
-            }
+        const hoatchatFields = {};
+        const dapvienData = {};
 
-            hoatchat.dapVien_dinhLuong = item.value;
-            await hoatchat.save({ transaction });
-        }
-        const danhSachHoatan1 = Object.entries(hoatan1Input).map(([id, value]) => {
-            return {
-                id: parseInt(id),
-                value
-            };
-        });
-        for (const item of danhSachHoatan1) {
-            const hoatchat = await db.hoatchatsanxuat.findByPk(item.id, { transaction });
-            if (!hoatchat) {
-                await transaction.rollback();
-                return res.status(404).json({ message: `Hoạt chất ID ${item.id} không tồn tại !` });
+        for (const key in req.body) {
+            if (key.startsWith('dapVien_')) {
+                hoatchatFields[key] = req.body[key];
+            } else {
+                dapvienData[key] = req.body[key];
             }
-            hoatchat.dapVien_hoatan1 = item.value;
-            await hoatchat.save({ transaction });
         }
-        const danhSachHoatan2 = Object.entries(hoatan2Input).map(([id, value]) => {
-            return {
-                id: parseInt(id),
-                value
-            };
-        });
-        for (const item of danhSachHoatan2) {
-            const hoatchat = await db.hoatchatsanxuat.findByPk(item.id, { transaction });
-            if (!hoatchat) {
-                await transaction.rollback();
-                return res.status(404).json({ message: `Hoạt chất ID ${item.id} không tồn tại !` });
+
+        await db.dapvien.upsert(dapvienData, { transaction });
+
+        for (const fieldName in hoatchatFields) {
+            const hoatChatValues = hoatchatFields[fieldName];
+            if (hoatChatValues && typeof hoatChatValues === 'object') {
+                for (const hoatChatId in hoatChatValues) {
+                    const value = hoatChatValues[hoatChatId];
+                    const hoatchat = await db.hoatchatsanxuat.findByPk(parseInt(hoatChatId), { transaction });
+                    if (!hoatchat) {
+                        await transaction.rollback();
+                        return res.status(404).json({ message: `Hoạt chất ID ${hoatChatId} không tồn tại!` });
+                    }
+                    hoatchat[fieldName] = value;
+                    await hoatchat.save({ transaction });
+                }
             }
-            hoatchat.dapVien_hoatan2 = item.value;
-            await hoatchat.save({ transaction });
         }
         await transaction.commit();
-        return res.status(200).json({ message: "Cập nhật 'dập viên - bao phim - đóng nang' thành công !" });
-
-
+        return res.status(200).json({ message: "Cập nhật thông tin dập viên thành công!" });
     } catch (e) {
         if (transaction) await transaction.rollback();
         console.error("Lỗi cập nhật 'dập viên - bao phim - đóng nang':", e);
@@ -432,7 +401,13 @@ const getAPIdapVien = async (req, res, next) => {
         if (!dapvien) return res.status(404).json(null);
         const hoatchats = await db.hoatchatsanxuat.findAll({
             where: { losanxuatId },
-            attributes: ['id', 'tenHoatChat', 'dapVien_dinhLuong', 'dapVien_hoatan1', 'dapVien_hoatan2'],
+            attributes: [
+                'id', 'tenHoatChat', 'dapVien_dinhLuong',
+                'dapVien_hoatan1_vien1', 'dapVien_hoatan1_vien2', 'dapVien_hoatan1_vien3',
+                'dapVien_hoatan1_vien4', 'dapVien_hoatan1_vien5', 'dapVien_hoatan1_vien6',
+                'dapVien_hoatan2_vien1', 'dapVien_hoatan2_vien2', 'dapVien_hoatan2_vien3',
+                'dapVien_hoatan2_vien4', 'dapVien_hoatan2_vien5', 'dapVien_hoatan2_vien6'
+            ],
             raw: true
         });
         dapvien.hoatchats = hoatchats;
@@ -501,6 +476,8 @@ const postAPIthanhPham = async (req, res, next) => {
                 thanhphamData[key] = req.body[key];
             }
         }
+        const user = req.user.MATK;
+        thanhphamData.nguoiThucHien = user;
 
         // Cập nhật hoặc tạo mới bản ghi thanhpham chính
         await db.thanhpham.upsert(thanhphamData, { transaction });
@@ -538,7 +515,67 @@ const postAPIthanhPham = async (req, res, next) => {
     }
 }
 
+const getLoSanXuat = async (req, res, next) => {
+    try {
+        const id = req.query.id || '';
+        const losanxuat = await db.losanxuat.findByPk(id, {
+            include: [
+                {
+                    model: db.BTPcom,
+                    as: "BTPcom"
+                },
+                {
+                    model: db.thanhpham,
+                    as: "thanhpham"
+                },
+                {
+                    model: db.dapvien,
+                    as: "dapvien"
+                },
+                {
+                    model: db.hoatchatsanxuat,
+                    as: "hoatchats"
+                },
+                {
+                    model: db.thongtinphache,
+                    as: "phache"
+                }
+            ],
+        });
+
+        if (!losanxuat) {
+            req.flash('error', "Sản phẩm không tồn tại !");
+            return res.redirect(req.get('Referer') || '/sanxuat/sanpham-list');
+        }
+
+        const contextDist = {
+            title: "Chi tiết sản phẩm",
+            // Chuyển instance Sequelize sang Object thuần để Pug dễ truy cập
+            losanxuat: losanxuat.get({ plain: true })
+        }
+        return res.render('./sanxuat/chitiet_losanxuat', contextDist);
+    } catch (e) {
+        console.log(e);
+        next(e);
+    }
+}
+const getExcel = async (req, res, next) => {
+    try {
+        const errorMessages = req.flash('error');
+        const successMessages = req.flash('success');
+        const contextDist = {
+            title: "EXCEL report",
+            errorMessages, successMessages,
+        }
+        return res.render('./sanxuat/excel', contextDist);
+    } catch (e) {
+        console.log(e);
+        next(e);
+    }
+}
 module.exports = {
+    getExcel,
+    getLoSanXuat,
     getAPIdapVien,
     postAPIdapVien,
     getAPI_BTPcom,

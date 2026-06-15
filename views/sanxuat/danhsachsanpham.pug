@@ -85,7 +85,8 @@ html(lang="vi")
                                 each sanpham, index in sanphams
                                     tr.font-auto
                                         td.text-center.ps-3.text-muted= index + 1
-                                        td.text-center= sanpham.soLo
+                                        td.text-center
+                                            a(href="/sanxuat/get-losanxuat?id=" + sanpham.id) #{sanpham.soLo}
                                         if sanpham.thamDinh == true
                                             td.text-center(style="color: red;")= "X"
                                         else
@@ -135,6 +136,9 @@ html(lang="vi")
                                 .form-group
                                     label(for='tenSanPham') Tên sản phẩm
                                     input.form-control(type='text' name='tenSanPham' id='tenSanPham' required)
+                                .form-group
+                                    label(for="soDangKy") Số đăng ký
+                                    input.form-control(type="text" name="soDangKy" id="soDangKy")
                                 .form-group
                                     label(for='dangBaoChe') Dạng bào chế
                                     input.form-control(type='text' name='dangBaoChe' id='dangBaoChe')
@@ -258,6 +262,7 @@ html(lang="vi")
                 $('#update-form').attr('action', `/sanxuat/update-sanpham?id=${sanpham.id || ''}`);
                 $('#update-form').attr('method', 'POST'); // Bổ sung để dễ theo dõi method
                 $('#soLo').val(sanpham.soLo || '');
+                $('#soDangKy').val(sanpham.soDangKy || '');
                 $('#thamDinh').prop('checked', sanpham.thamDinh || '');
                 $('#coLo').val(sanpham.coLo || '');
                 $('#tenSanPham').val(sanpham.tenSanPham || '');

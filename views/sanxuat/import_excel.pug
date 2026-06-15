@@ -1,0 +1,47 @@
+doctype html
+html(lang="vi")
+    head
+        title #{title}
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet' href='/css/all.min.css')
+        style.
+            body { background-color: #f4f7f6; padding-top: 50px; }
+            .import-card { max-width: 600px; margin: auto; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    body
+        .container
+            .card.import-card
+                .card-header.bg-primary.text-white.text-center
+                    h4.mb-0 
+                        i.fas.fa-file-import.me-2
+                        | IMPORT DỮ LIỆU APQR
+                .card-body.p-4
+                    if errorMessages && errorMessages.length
+                        .alert.alert-danger
+                            each msg in errorMessages
+                                div= msg
+                    if successMessages && successMessages.length
+                        .alert.alert-success
+                            each msg in successMessages
+                                div= msg
+
+                    form(action="/sanxuat/postImportDanhsachsanpham" method="POST" enctype="multipart/form-data")
+                        .mb-4
+                            label.form-label.fw-bold Chọn file Excel (.xlsx)
+                            input.form-control(type="file" name="excelFile" accept=".xlsx" required)
+                            .form-text File phải tuân thủ đúng định dạng cột của báo cáo xuất Excel.
+                        
+                        .d-grid.gap-2
+                            button.btn.btn-primary(type="submit")
+                                i.fas.fa-upload.me-2
+                                | Bắt đầu Import
+                            a.btn.btn-outline-secondary(href="/sanxuat/sanpham-list")
+                                i.fas.fa-arrow-left.me-2
+                                | Quay lại danh sách
+                .card-footer.bg-light
+                    p.small.text-muted.mb-0
+                        strong Lưu ý: 
+                        | Hệ thống sẽ dựa vào 
+                        span.text-danger "Số lô" 
+                        | và 
+                        span.text-danger "Tên hoạt chất" 
+                        | để cập nhật dữ liệu. Nếu lô chưa tồn tại, hệ thống sẽ tạo mới.
