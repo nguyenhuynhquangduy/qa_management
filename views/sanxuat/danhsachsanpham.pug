@@ -53,7 +53,7 @@ html(lang="vi")
                             form.input-group.input-group-sm(action="/sanxuat/sanpham-list", method="GET")
                                 span.input-group-text.bg-white
                                     i.fas.fa-search.text-muted
-                                input.form-control(type="text" name="search" id="searchInput" placeholder="Tìm kiếm sản phẩm" style="text-transform: none;")
+                                input.form-control(type="text" name="search" id="searchInput" placeholder="Tìm kiếm sản phẩm" style="text-transform: none;" value=`${search ? search : ''}`)
                         i.fas.fa-sync-alt.btn#reloadProduct
             .section
                 if errorMessages && errorMessages.length
@@ -69,7 +69,7 @@ html(lang="vi")
                     table.table.table-hover.align-middle.mb-0
                         thead.table-light
                             tr
-                                th.ps-3(style="width: 50px") #
+                                th.ps-3(style="width: 50px") ID
                                 th.text-center(style="width: 100px") Số lô
                                 th.text-center TĐ
                                 th.text-center Tên sản phẩm
@@ -82,9 +82,9 @@ html(lang="vi")
                                 th.text-end.pe-3 Thao tác
                         tbody#tableBody
                             if sanphams && sanphams.length > 0 
-                                each sanpham, index in sanphams
+                                each sanpham in sanphams
                                     tr.font-auto
-                                        td.text-center.ps-3.text-muted= index + 1
+                                        td.text-center.ps-3.text-muted= sanpham.id
                                         td.text-center
                                             a(href="/sanxuat/get-losanxuat?id=" + sanpham.id) #{sanpham.soLo}
                                         if sanpham.thamDinh == true
@@ -119,6 +119,44 @@ html(lang="vi")
                             else
                                 tr
                                     td.text-center.py-4(colspan="8") Không có Sản phẩm nào được tìm thấy.
+        .section.mt-4.p-3
+            nav(aria-label="Page navigation")
+                ul.pagination.justify-content-center
+                    li.page-item(class={ disabled: currentPage === 1 })
+                        a.page-link(href=`/sanxuat/sanpham-list?page=${currentPage - 1}${search ? '&search=' + search : ''}` aria-label="Previous")
+                            span(aria-hidden="true") &laquo;
+                    
+                    -
+                        const maxPagesToShow = 5; // Số lượng trang tối đa hiển thị trực tiếp
+                        let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+                        let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+
+                        if (endPage - startPage + 1 < maxPagesToShow) {
+                            startPage = Math.max(1, endPage - maxPagesToShow + 1);
+                        }
+
+                    if startPage > 1
+                        li.page-item
+                            a.page-link(href=`/sanxuat/sanpham-list?page=1${search ? '&search=' + search : ''}`) 1
+                        if startPage > 2
+                            li.page-item.disabled
+                                span.page-link ...
+
+                    each pageNum in Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i)
+                        li.page-item(class={ active: pageNum === currentPage })
+                            a.page-link(href=`/sanxuat/sanpham-list?page=${pageNum}${search ? '&search=' + search : ''}`) #{pageNum}
+
+                    if endPage < totalPages
+                        if endPage < totalPages - 1
+                            li.page-item.disabled
+                                span.page-link ...
+                        li.page-item
+                            a.page-link(href=`/sanxuat/sanpham-list?page=${totalPages}${search ? '&search=' + search : ''}`) #{totalPages}
+
+                    li.page-item(class={ disabled: currentPage === totalPages })
+                        a.page-link(href=`/sanxuat/sanpham-list?page=${currentPage + 1}${search ? '&search=' + search : ''}` aria-label="Next")
+                            span(aria-hidden="true") &raquo;
+
         .section 
             dialog#update-dialog
                 .text-end
@@ -247,7 +285,7 @@ html(lang="vi")
 
             $('#reloadProduct').on('click', function(e) {
                 e.preventDefault(); // Chặn không cho thẻ <a> chuyển hướng lung tung
-                window.location.href = '/danhmuc/sanpham';
+                window.location.href = '/sanxuat/sanpham-list';
             })
             $('#tableBody').on('click', '.edit-all-btn', function() {
                 const sanpham = JSON.parse(this.dataset.sanpham || '{}');

@@ -209,8 +209,60 @@ const updateUser = async (req, res, next) => {
         next(e);
     }
 }
+let viewLogs = async (req, res, next) => {
+    try {
+        const ITEMS_PER_PAGE = 50;//Số lượng mỗi trang
+        let page = parseInt(req.query.page) || 1; // Trang hiện tại
+        let offset = (page - 1) * ITEMS_PER_PAGE;
+        let totalItems = await db.log.count();
+        const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+        let logs = await db.log.findAll({
+            include: [{
+                model: db.taikhoan,
+                as: 'taikhoan'
+            }],
+            limit: ITEMS_PER_PAGE,
+            offset: offset,
+            order: [['timestamp', 'DESC']]
+        });
+
+        logs = logs.map(log => {
+            let timestamp = log.timestamp ? moment(log.timestamp).format('HH:mm:ss DD-MM-YYYY') : 'N/A';
+            log.setDataValue('timestamp', timestamp); // Sửa trực tiếp trong dataValues
+            return log;
+        });
+
+        let errorMessages = req.flash('error');
+        let successMessages = req.flash('success');
+
+        let contextDict = {
+            title: 'Logs',
+            customer: req.user,
+            logs, page, totalPages,
+            errorMessages, successMessages
+        };
+        res.render('./admin/logs', contextDict)
+    } catch (e) {
+        next(e);
+    }
+}
+let deleteLogs = async (req, res, next) => {
+    try {
+        await db.log.destroy({
+            where: {}, // Không có điều kiện, sẽ xóa tất cả các bản ghi
+            truncate: true // Cắt giảm bảng để reset ID (nếu có)
+        });
+        req.flash('success', 'Xoá log thành công!');
+        return res.redirect('/admin/logs');
+    } catch (e) {
+        req.flash('error', 'Có lỗi !')
+        next(e);
+    }
+}
 
 module.exports = {
+    deleteLogs,
+    viewLogs,
     updateUser,
     getUserList,
     postAddUser,

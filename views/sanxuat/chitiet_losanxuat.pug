@@ -107,6 +107,7 @@ html(lang="vi")
                                 if losanxuat.hoatchats && losanxuat.hoatchats.length > 0
                                     each hc, index in losanxuat.hoatchats
                                         div #{hc.tenHoatChat}#{index < losanxuat.hoatchats.length - 1 ? ', ' : ''}
+                                        br
                                 else
                                     span.text-muted ---
                         //- .col-md-2: .info-label Ghi chú 
@@ -179,12 +180,12 @@ html(lang="vi")
                                 .info-value #{losanxuat.BTPcom.tongTap || '---'}
                     
                     h6.section-title Định lượng hoạt chất trong Cốm
-                    .table-responsive
+                    .table-responsive.col-6
                         table.table.table-sm.table-bordered
                             thead.table-light
                                 tr
-                                    th Hoạt chất
-                                    th.text-center BTP_dinhLuong (%)
+                                    th.col-3 Hoạt chất
+                                    th.text-center BTP Định lượng (%)
                             tbody
                                 if losanxuat.hoatchats
                                     each hc in losanxuat.hoatchats
@@ -218,22 +219,55 @@ html(lang="vi")
                                         .info-value #{losanxuat.dapvien.tongTap || '---'}
                     
                     h6.section-title Kiểm nghiệm hoạt chất (Giai đoạn Dập viên)
-                    .table-responsive
-                        table.table.table-sm.table-bordered
+                    .table-responsive.col-6
+                        table.table.table-sm.table-bordered.col-6
                             thead.table-light
                                 tr
-                                    th Hoạt chất
-                                    th.text-center Định lượng (%)
-                                    th.text-center Độ hòa tan 1
-                                    th.text-center Độ hòa tan 2
+                                    th.col-3 Hoạt chất
+                                    th.col-3.text-center Định lượng (%)
                             tbody
                                 if losanxuat.hoatchats
                                     each hc in losanxuat.hoatchats
                                         tr
                                             td #{hc.tenHoatChat}
                                             td.text-center.fw-bold.text-info #{hc.dapVien_dinhLuong || '---'}
-                                            td.text-center #{hc.dapVien_hoatan1 || '---'}
-                                            td.text-center #{hc.dapVien_hoatan2 || '---'}
+                                            
+                    h6.section-title Chi tiết Độ hòa tan (Dập viên)
+                    .table-responsive.mb-4
+                        table.table.table-sm.table-bordered
+                            thead.table-light
+                                tr.col-12
+                                    th.col-4 Hoạt chất
+                                    th Loại
+                                    th.text-center V1
+                                    th.text-center V2
+                                    th.text-center V3
+                                    th.text-center V4
+                                    th.text-center V5
+                                    th.text-center V6
+                            tbody
+                                if losanxuat.hoatchats
+                                    each hc in losanxuat.hoatchats
+                                        tr  
+                                            td.fw-bold(rowspan="2") #{hc.tenHoatChat}
+                                            td HT1 (%)
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan1_vien1 || '---'}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan1_vien2 || '---'}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan1_vien3 || '---'}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan1_vien4 || '---'}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan1_vien5 || '---'}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan1_vien6 || '---'}
+                                        tr
+                                            td HT2 (%)
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan2_vien1 || '---'}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan2_vien2 || '---'}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan2_vien3 || '---'}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan2_vien4 || '---'}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan2_vien5 || '---'}
+                                            td.text-center.fw-bold.text-info #{hc.dapVien_hoatan2_vien6 || '---'}
+                                           
+                                            
+                    
 
             // 5. Nhóm: Thông tin thành phẩm & Chi tiết kiểm nghiệm TP
             .card
@@ -272,10 +306,10 @@ html(lang="vi")
                     
                     h6.section-title Định lượng & Độ rã & Độ ẩm (Thành phẩm)
                     .table-responsive.mb-4
-                        table.table.table-sm.table-bordered
+                        table.table.table-sm.table-bordered.col-12
                             thead.table-light
                                 tr
-                                    th Hoạt chất
+                                    th.col-4 Hoạt chất
                                     th.text-center Định lượng (%)
                                     th.text-center Độ rã
                                     th.text-center Độ ẩm
@@ -292,8 +326,8 @@ html(lang="vi")
                     .table-responsive.mb-4
                         table.table.table-sm.table-bordered
                             thead.table-light
-                                tr
-                                    th Hoạt chất
+                                tr.col-12
+                                    th.col-4 Hoạt chất
                                     th Loại
                                     th.text-center V1
                                     th.text-center V2
@@ -307,20 +341,20 @@ html(lang="vi")
                                         tr
                                             td.fw-bold(rowspan="2") #{hc.tenHoatChat}
                                             td HT1 (%)
-                                            td.text-center #{hc.thanhPham_hoatan1_vien1 || '-'}
-                                            td.text-center #{hc.thanhPham_hoatan1_vien2 || '-'}
-                                            td.text-center #{hc.thanhPham_hoatan1_vien3 || '-'}
-                                            td.text-center #{hc.thanhPham_hoatan1_vien4 || '-'}
-                                            td.text-center #{hc.thanhPham_hoatan1_vien5 || '-'}
-                                            td.text-center #{hc.thanhPham_hoatan1_vien6 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan1_vien1 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan1_vien2 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan1_vien3 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan1_vien4 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan1_vien5 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan1_vien6 || '-'}
                                         tr
                                             td HT2 (%)
-                                            td.text-center #{hc.thanhPham_hoatan2_vien1 || '-'}
-                                            td.text-center #{hc.thanhPham_hoatan2_vien2 || '-'}
-                                            td.text-center #{hc.thanhPham_hoatan2_vien3 || '-'}
-                                            td.text-center #{hc.thanhPham_hoatan2_vien4 || '-'}
-                                            td.text-center #{hc.thanhPham_hoatan2_vien5 || '-'}
-                                            td.text-center #{hc.thanhPham_hoatan2_vien6 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan2_vien1 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan2_vien2 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan2_vien3 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan2_vien4 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan2_vien5 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.thanhPham_hoatan2_vien6 || '-'}
 
                     h6.section-title Độ đồng đều đơn vị liều (DDDVL)
                     .table-responsive
@@ -345,16 +379,16 @@ html(lang="vi")
                                     each hc in losanxuat.hoatchats
                                         tr
                                             td.small.fw-bold #{hc.tenHoatChat}
-                                            td.text-center #{hc.DDDVL_Vien1 || '-'}
-                                            td.text-center #{hc.DDDVL_Vien2 || '-'}
-                                            td.text-center #{hc.DDDVL_Vien3 || '-'}
-                                            td.text-center #{hc.DDDVL_Vien4 || '-'}
-                                            td.text-center #{hc.DDDVL_Vien5 || '-'}
-                                            td.text-center #{hc.DDDVL_Vien6 || '-'}
-                                            td.text-center #{hc.DDDVL_Vien7 || '-'}
-                                            td.text-center #{hc.DDDVL_Vien8 || '-'}
-                                            td.text-center #{hc.DDDVL_Vien9 || '-'}
-                                            td.text-center #{hc.DDDVL_Vien10 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.DDDVL_Vien1 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.DDDVL_Vien2 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.DDDVL_Vien3 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.DDDVL_Vien4 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.DDDVL_Vien5 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.DDDVL_Vien6 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.DDDVL_Vien7 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.DDDVL_Vien8 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.DDDVL_Vien9 || '-'}
+                                            td.text-center.fw-bold.text-info #{hc.DDDVL_Vien10 || '-'}
                                             td.text-center.fw-bold #{hc.DDDVL_TB || '-'}
                                             td.text-center.fw-bold.text-danger #{hc.DDDVL_AV || '-'}
 

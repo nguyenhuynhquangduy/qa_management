@@ -14,4 +14,7 @@ router.post("/admin/add-user", isLoggedIn, isAdmin, logs, home.postAddUser);
 router.get("/admin/user-list", isLoggedIn, isAdmin, home.getUserList);
 router.post("/admin/update-user", isLoggedIn, isAdmin, home.updateUser);
 
+router.get("/admin/logs", isLoggedIn, isAdmin, home.viewLogs);
+router.get("/admin/delete-logs", isLoggedIn, isAdmin, home.deleteLogs);
+
 module.exports = router;

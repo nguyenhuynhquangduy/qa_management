@@ -116,7 +116,7 @@ html(lang="vi")
                             const res = await fetch(`/danhmuc/api/sanphams?term=${encodeURIComponent(request.term)}`);
                             const data = await res.json();
                             response(data.map(item => ({ 
-                                label: item.tenSanPham, 
+                                label: item.tenSanPham + ' - ' + item.dangBaoChe + ' - ' + item.quyCachDongGoi, 
                                 value: item.tenSanPham,
                                 rawData: item
                             })));
@@ -134,6 +134,7 @@ html(lang="vi")
                     $(this).val(ui.item.value);
                     $('#dangBaoChe').val(ui.item.rawData.dangBaoChe);
                     $('#quyCachDongGoi').val(ui.item.rawData.quyCachDongGoi);
+                    $('#soDangKy').val(ui.item.rawData.soDangKy);
 
                     // 2. Lấy danh sách hoạt chất đi kèm từ dữ liệu ẩn (rawData)
                     const danhSachHoatChat = ui.item.rawData.hoatchats || [];

@@ -12,7 +12,8 @@ const getImportPage = async (req, res, next) => {
         res.render('./sanxuat/import_excel', {
             title: "Import Dữ liệu Sản xuất",
             errorMessages: req.flash('error'),
-            successMessages: req.flash('success')
+            successMessages: req.flash('success'),
+            infoMessages: req.flash('info')
         });
     } catch (e) {
         next(e);
@@ -86,7 +87,7 @@ const toBoolean = (row, colLetter) => {
     const v = getStr(row, colLetter);
     if (!v) return false;
     const normalized = String(v).trim().toLowerCase();
-    return ['x', 'có', 'co', 'true', '1', 'yes', 'đạt', 'dat'].includes(normalized);
+    return ['x', 'có', 'co', 'true', '1', 'yes', 'đạt', 'dat', 'TĐ', 'TD'].includes(normalized);
 };
 
 // ============================================================
@@ -176,6 +177,8 @@ const importExcel_DanhSachSanPham = async (req, res, next) => {
         const worksheet = workbook.getWorksheet(1);
 
         let count = 0;
+        const newLots = [];      // các số lô mới tạo
+        const updatedLots = [];  // các số lô đã tồn tại, được cập nhật
         const lastRow = worksheet.actualRowCount || worksheet.rowCount;
 
         // Dữ liệu bắt đầu từ dòng 4 (3 dòng đầu là tiêu đề 3 tầng)
@@ -202,7 +205,12 @@ const importExcel_DanhSachSanPham = async (req, res, next) => {
                 defaults: losanxuatInfo,
                 transaction
             });
-            if (!created) await lot.update(losanxuatInfo, { transaction });
+            if (created) {
+                newLots.push(soLo);
+            } else {
+                updatedLots.push(soLo);
+                await lot.update(losanxuatInfo, { transaction });
+            }
 
             // ---------- 2. THÔNG TIN PHA CHẾ - ĐÓNG GÓI (thongtinphache) ----------
             await db.thongtinphache.upsert({
@@ -336,7 +344,10 @@ const importExcel_DanhSachSanPham = async (req, res, next) => {
         // Xóa file tạm sau khi xử lý xong
         if (req.file) fs.unlinkSync(req.file.path);
 
-        req.flash('success', `Import thành công ${count} lô sản xuất!`);
+        req.flash('success', `Import thành công ${count} lô sản xuất! (${newLots.length} lô mới, ${updatedLots.length} lô đã tồn tại được cập nhật)`);
+        if (updatedLots.length > 0) {
+            req.flash('info', `Các số lô đã tồn tại từ trước và được cập nhật lại: ${updatedLots.join(', ')}`);
+        }
         res.redirect('/sanxuat/get-excel');
     } catch (e) {
         if (transaction) await transaction.rollback();
@@ -394,10 +405,10 @@ const exportExcel_DanhSachSanPham = async (req, res, next) => {
             'ĐỊNH LƯỢNG (%)(Dập viên...)',
             'ĐỊNH LƯỢNG (%)(Thành phẩm)',
             'Độ rã (phút)',
-            'HÒA TAN (Dập viên...)', '', '', '', '', '', '', '',
-            'HÒA TAN (Thành phẩm)', '', '', '', '', '', '', '',
-            'Độ ẩm',
-            'Đồng đều đơn vị liều', '', '', '',
+            'HÒA TAN (%)(Dập viên...)', '', '', '', '', '', '', '',
+            'HÒA TAN (%) (Thành phẩm)', '', '', '', '', '', '', '',
+            'Độ ẩm (%)',
+            'Đồng đều đơn vị liều (%)', '', '', '',
             'GHI CHÚ'
         ];
 

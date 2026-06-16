@@ -1,0 +1,120 @@
+doctype html
+html(lang="vi")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+     
+        link(rel="stylesheet" href="/css/bootstrap.min.css")
+        link(rel='stylesheet', href='/css/main.css')
+        link(rel='stylesheet' href='/css/style.css')
+        link(rel='stylesheet' href='/css/all.min.css')
+        //favicon
+        link(rel='shortcut icon' href='/image/ndsoft.ico')
+        script(src="/js/jquery.min.js")
+        script(src="/js/bootstrap.bundle.min.js") 
+    body    
+        .container-fruid
+            .card
+                .card-body   
+                    .m-sm-6
+                        .features_items
+                            h2.title.text-center
+                                | NHẬT KÝ NGƯỜI DÙNG
+                        
+                            .row(style='margin-left:2%')
+                                // Tạo tìm kiếm
+                                .col.search_box.pull-right
+                                    input#search-box(type='text', placeholder='Nhập tên tài khoản') 
+                                    | &emsp;
+                                .col         
+                                    button.btn.btn-danger.btn-sm.delete-link(href='/admin/delete-logs')  Xoá tất cả     
+                            .card-body        
+                             if  logs
+                                //Thêm thuộc tính cuộn ngang cho bảng  
+                                .table-responsive
+                                    table.table.table-striped.table-bordered
+                                        thead.thead
+                                            tr
+                                                th Số TT
+                                                th Tài khoản
+                                                th Hành động
+                                                th Thời gian
+                                                th Thêm thông tin
+                                        tbody.tbody
+                                            each log, index in logs
+                                               - var logUrl = '/thongtinlog?MAPB=' + log.MAPB;
+                                                tr
+                                                    td= index + 1
+                                                    td 
+                                                        p= log.taikhoan.username
+                                                    td 
+                                                        p= log.action
+                                                    td 
+                                                        p= log.timestamp
+                                                    td 
+                                                        p= log.additionalInfo          
+                    if totalPages > 1
+                        nav
+                            ul.pagination
+                                if page > 1
+                                    li.page-item
+                                        a.page-link(href=`?page=1`) Đầu
+                                    li.page-item
+                                        a.page-link(href=`?page=${page - 1}`) Trước
+
+                                - let range = 5; // Số trang hiển thị xung quanh trang hiện tại
+                                - let startPage = Math.max(1, page - range);
+                                - let endPage = Math.min(totalPages, page + range);
+
+                                if startPage > 1
+                                    li.page-item
+                                        span.page-link ... 
+
+                                each currentPage in [...Array(endPage - startPage + 1).keys()].map(n => n + startPage)
+                                    li.page-item(class=(page === currentPage ? 'active' : ''))
+                                        a.page-link(href=`?page=${currentPage}`)= currentPage
+
+                                if endPage < totalPages
+                                    li.page-item
+                                        span.page-link ... 
+
+                                if page < totalPages
+                                    li.page-item
+                                        a.page-link(href=`?page=${page + 1}`) Sau
+                                    li.page-item
+                                        a.page-link(href=`?page=${totalPages}`) Cuối
+                                                                       
+        // Thêm script để lắng nghe sự kiện khi người dùng nhập tìm kiếm
+    script.
+        $(document).ready(function(){
+           $('#search-box').on('input', function() {
+                const query = $(this).val().toLowerCase().trim();
+                
+                // Lặp qua các hàng trong bảng
+                $('tbody.tbody tr').each(function() {
+                    console.log($(this).html());
+                    // Tìm cột chứa tên phòng ban (td thứ 3)
+                    const username = $(this).find('td:nth-child(2)').text().toLowerCase();
+                    // Kiểm tra nếu tên phòng ban chứa từ khóa tìm kiếm
+                    if (username.includes(query)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+         
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-link');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); // Ngăn hành động mặc định
+                    const id = this.getAttribute('data-id'); // Lấy giá trị id từ thuộc tính data
+                    const userConfirmed = confirm('Bạn chắc chắn muốn xóa tất cả nhật ký ?');
+                    if (userConfirmed) {
+                        window.location.href = `/admin/delete-logs`; // Thực hiện chuyển hướng nếu xác nhận
+                    }
+                });
+            });
+        });      

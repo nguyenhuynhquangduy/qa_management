@@ -22,23 +22,44 @@ const getListSanpham = async (req, res, next) => {
         const errorMessages = req.flash('error');
         const successMessages = req.flash('success');
         const search = req.query.search || '';
-        const sanphams = await db.losanxuat.findAll({
+        const Item_per_page = 10;
+        const page = parseInt(req.query.page) || 1;
+        const offset = (page - 1) * Item_per_page;
+        const { count, rows } = await db.losanxuat.findAndCountAll({
             where: {
-                tenSanPham: { [Op.like]: `%${search}%` }
+                [Op.or]: [
+                    {
+                        tenSanPham: {
+                            [Op.like]: `%${search}%`
+                        }
+                    },
+                    {
+                        soLo: {
+                            [Op.like]: `%${search}%`
+                        }
+                    }
+                ]
             },
             include: {
                 model: db.hoatchatsanxuat,
                 as: 'hoatchats'
-            }
+            },
+            order: [
+                ['id', 'DESC']
+            ],
+            limit: Item_per_page,
+            offset,
         });
-        // sanphams.forEach(sanpham => {
-        //     sanpham.hoatchats.forEach(hoatchat => {
-        //         console.log("hoatchat:", hoatchat);
-        //     })
-        // })
+        const sanphamsRaw = rows;
+        const totalPages = Math.ceil(count / Item_per_page);
+
+        // Chuyển đổi sang Object thuần để View (Pug/EJS) xử lý dễ dàng và đúng cấu trúc mảng
+        const sanphams = sanphamsRaw.map(item => item.get({ plain: true }));
+
         const contextDist = {
             title: "Thêm sản phẩm - viên cốm",
-            errorMessages, successMessages, sanphams
+            errorMessages, successMessages, sanphams,
+            currentPage: page, totalPages, search
         }
         return res.render('./sanxuat/danhsachsanpham', contextDist);
     } catch (e) {
